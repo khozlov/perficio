@@ -1,0 +1,153 @@
+border-radius()
+  -webkit-border-radius arguments
+  -moz-border-radius arguments
+  border-radius arguments
+
+center-block()
+  display block
+  margin-left auto
+  margin-right auto
+
+body
+  font-family "Montserrat"
+  font-weight 400
+  font-size 18px
+  background-color whitesmoke
+
+header
+  position relative
+  background #4f8a20 url("/images/noise-e1e99bdf.png")
+  text-shadow 1px 1px 1px #254722
+  height 100px
+  margin-bottom 40px
+  color #fff
+
+  .wrapper
+    width 960px
+    margin auto
+    text-align right
+
+    .logo
+      margin 0
+      padding 0
+      border 0
+
+      a
+        float left
+        height 61px
+        padding: 20px 20px
+
+    nav
+      margin-left 20px
+
+      a
+        display inline-block
+        padding 0 20px
+        color #fff
+        line-height 100px
+        text-decoration none
+
+footer
+  position relative
+  background #254722
+  text-shadow 1px 1px 1px #254722
+  color #fff
+  padding 30px 0
+  margin-top 40px
+
+  .wrapper
+    width 960px
+    margin auto
+    text-align center
+    font-size 0.8em
+
+    a
+      margin 0 5px
+
+    .copyright
+      padding-top 1em
+
+.usersList
+  margin 10px 0
+
+.userPhoto
+  border-radius 50%
+  border 5px #5F8D39 solid
+  width 96px
+  height 96px
+
+.row
+  border-radius 5px
+  background-color #fff
+  border 3px #254722 solid
+  width 80%
+  padding 10px 0
+  center-block()
+  cursor pointer
+  color #254722
+
+  > div
+    height 96px
+    display table
+    float left
+    text-align center
+
+  .userName
+    display table-cell
+    vertical-align: middle
+    font-family Arial
+
+  .recentAchievement img
+    width 64px
+    height 64px
+    margin-top 16px
+
+  .achievementCount
+    display table-cell
+    vertical-align: middle
+
+.row:hover
+  color #254722
+  text-decoration none
+
+.userDetails
+  width 80%
+  center-block()
+
+  .achievementImage
+    float left
+    margin-right 15px
+
+  .achievementDetails
+    float left
+
+    .description
+      font-size 14px
+
+  .achievement
+    clear both
+    border-radius 5px
+    margin 10px 0
+    padding 10px
+    background-color #fff
+    border 2px #254722 solid
+
+    img
+      width 64px
+      height 64px
+
+  .userHeader
+    border-radius 5px
+    background-color #fff
+    border 3px #254722 solid
+    text-align center
+    font-size 35px
+    padding 10px 0
+    font-family Arial
+
+    img
+      margin-right 25px
+
+  .locked
+    opacity 0.5
+    cursor pointer

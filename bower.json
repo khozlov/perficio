@@ -1,0 +1,23 @@
+{
+  "name": "perficio",
+  "version": "0.1.0",
+  "authors": [
+    "Pawel Kozlowski <khozlov@gmail.com>"
+  ],
+  "description": "Gamify everything!!!",
+  "main": "app.js",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.3.4",
+    "bootstrap": "~3.3.1",
+    "ui-router": "~0.2.13"
+  }
+}

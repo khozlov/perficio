@@ -1,0 +1,52 @@
+doctype html
+//if lt IE 7
+  html(class="no-js lt-ie9 lt-ie8 lt-ie7", lang="en")
+//if IE 7
+  html(class="no-js lt-ie9 lt-ie8", lang="en")
+//if IE 8
+  html(class="no-js lt-ie9", lang="en")
+// [if gt IE 8] <!
+html(class="no-js")
+  // <![endif]
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible",content="IE=edge,chrome=1")
+    title u2i is gamified
+
+    link(rel='stylesheet', href='assets/vendor/bootstrap/dist/css/bootstrap.css')
+    link(rel='stylesheet', href='assets/css/main.css')
+    link(href='//fonts.googleapis.com/css?family=Montserrat:400,700', rel='stylesheet', type='text/css')
+        
+    script(type='text/javascript', src='assets/vendor/angular/angular.js')
+    script(type='text/javascript', src='assets/vendor/ui-router/release/angular-ui-router.js')
+    script(type='text/javascript', src='assets/vendor/bootstrap/dist/js/bootstrap.js')
+    script(type='text/javascript', src='assets/js/main.js')
+          
+  body(ng-app='perficioApp')
+    header
+      .wrapper
+        h1.logo
+          a(href='http://www.u2i.com')
+            img(width='104', height='61', alt='u2i', src='http://www.u2i.com/images/logo-67ce536e.png')
+        nav
+          a(href='http://www.u2i.com/why-hire-us.html') Why hire us
+          a(href='http://www.u2i.com/why-join-us.html') Why join us
+          a(href='http://www.u2i.com/our-work.html') Our work
+          a(href='http://www.u2i.com/we-are-hiring.html') We're hiring
+          a(href='http://blog.u2i.com') Blog
+          a(href='http://www.u2i.com/contact.html') Contact
+    main(ui-view='')
+    footer
+      .wrapper
+        .social-media
+          a(href='https://www.facebook.com/u2iKRK')
+            img(height='50', src='http://www.u2i.com/images/fb-icon-4a2759e3.png')
+          a(href='https://twitter.com/u2iKRK')
+            img(height='50', src='http://www.u2i.com/images/tw-icon-3a3d10b0.png')
+          a(rel='publisher', href='https://plus.google.com/+U2iKrakow/posts')
+            img(height='50', src='http://www.u2i.com/images/gp-icon-1b53af64.png')
+          a(href='https://www.linkedin.com/company/u2i')
+            img(height='50' src='http://www.u2i.com/images/li-icon-ebea50f6.png')
+          a(href='https://www.youtube.com/channel/UC59UaSQnX0qMuofHy_plF-Q')
+            img(height='50', src='http://www.u2i.com/images/yt-icon-d837aa25.png')
+        .copyright © 2013 u2i LLC. All rights reserved.

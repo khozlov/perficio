@@ -1,0 +1,8 @@
+{
+  "urlNamespace": "",
+  "googleCallbackUrl": "/auth/google/callback",
+  "mongoUri": "localhost/perficio",
+  "mongoUser": "",
+  "mongoPassword": "",
+  "port": 3000
+}

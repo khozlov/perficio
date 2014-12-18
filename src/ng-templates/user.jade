@@ -1,0 +1,23 @@
+.userDetails(ng-controller='UserController as userCtrl')
+  .userHeader
+    img.userPhoto(ng-src="{{user.photoUrl}}")
+    {{user.name}}
+  .achievement.unlocked(ng-repeat='achievement in user.achievements')
+    .achievementImage
+      img(ng-src="{{achievement.imageUrl}}")
+    .achievementDetails
+      {{achievement.name}}
+      br
+      span.description
+        {{achievement.description}}
+    .clearfix
+  .divider
+  .achievement.locked(ng-repeat='achievement in user.unachieved', ng-click="grantAchievement(achievement._id)")
+    .achievementImage
+      img(ng-src="{{achievement.imageUrl}}")
+    .achievementDetails
+      {{achievement.name}}
+      br
+      span.description
+        {{achievement.description}}
+    .clearfix

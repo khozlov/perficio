@@ -1,0 +1,13 @@
+div(ng-controller='UserListController as usersListCtrl')
+  .usersList(ng-repeat='user in users')
+    a.row(ui-sref="user({ id: user._id })") 
+      .col-md-2.userPhotoContainer
+        img.userPhoto(ng-src="{{user.photoUrl}}")
+      .col-md-4
+        .userName
+          {{user.name}}
+      .col-md-1
+          .achievementCount
+            {{user.achievementsCount}}
+      .col-md-1.recentAchievement(ng-repeat='achievement in user.achievements')          
+        img(ng-src="{{achievement.imageUrl}}") 

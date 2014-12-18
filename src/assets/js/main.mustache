@@ -1,0 +1,69 @@
+var perficioApp = angular.module('perficioApp', ['ui.router']);
+
+perficioApp.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+  //
+  // For any unmatched url, redirect to /state1
+  $urlRouterProvider.otherwise("/users");
+  //
+  // Now set up the states
+  $stateProvider
+    .state('users', {
+      url: "/users",
+      templateUrl: "{{urlNamespace}}/ng-templates/users.html"
+    })
+    .state('user', {
+      url: "/user/:id",
+      templateUrl: "{{urlNamespace}}/ng-templates/user.html"
+    });
+
+
+  $httpProvider.interceptors.push(function($q, $window) {
+    return {
+      'responseError': function(response) {
+        if (response.status === 401) {
+          if (response.data.redirect) {
+            $window.location.pathname = response.data.redirect;
+            return $q.reject(response);
+          }
+        }
+        return response;
+      }
+    };
+  });
+});
+
+
+perficioApp.controller('UserListController', function($scope, $http) {
+  $scope.users = [];
+  $http.get('{{urlNamespace}}/users').success(function(data) {
+    var users = data;
+    for (var i = 0; i < users.length; i++) {
+      users[i]['achievementsCount'] = users[i].achievements.length;
+      users[i].achievements = users[i].achievements.slice(0, Math.min(5, users[i]['achievementsCount']));
+    }
+    $scope.users = users;
+  });
+});
+
+perficioApp.controller('UserController', function($scope, $http, $stateParams) {
+
+  $http.get('{{urlNamespace}}/users/' + $stateParams.id).success(function(data) {
+    $scope.user = data;
+  });
+
+  $scope.grantAchievement = function(templateId) {
+    angular.forEach($scope.user.unachieved, function(template, index) {
+      if (template._id == templateId) {
+        $scope.user.unachieved.splice(index, 1);
+      }
+    });
+    $http.post('{{urlNamespace}}/achievements', {
+      ownerId: $stateParams.id,
+      templateId: templateId
+    }).success(
+      function(data) {
+        $scope.user.achievements.unshift(data);
+      }
+    )
+  }
+});
