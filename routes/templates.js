@@ -1,3 +1,5 @@
+"use strict";
+
 var mongoose = require('mongoose'),
   Template = mongoose.model('Template'),
   ObjectId = require('mongoose').Types.ObjectId;

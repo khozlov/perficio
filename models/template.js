@@ -1,3 +1,5 @@
+"use strict";
+
 var mongoose = require('mongoose'),
   timestamps = require('mongoose-timestamp');
 

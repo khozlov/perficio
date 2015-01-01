@@ -1,3 +1,5 @@
+"use strict";
+
 require('./models/db');
 require('./models/user');
 require('./models/achievement');
