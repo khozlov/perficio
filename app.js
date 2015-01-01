@@ -5,23 +5,23 @@ require('./models/user');
 require('./models/achievement');
 require('./models/template');
 
-var express = require('express')
-  , bodyParser = require('body-parser')
-  , methodOverride = require('method-override')
-  , session = require('cookie-session')
-  , logger = require('morgan')
-  , app = express()
-  , users = require('./routes/users')
-  , templates = require('./routes/templates')
-  , achievements = require('./routes/achievements')
-  , passport = require('passport')
-  , GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
-  , mongoose = require('mongoose')
-  , User = mongoose.model('User')
-  , moment = require('moment')
-  , config = require('config')
-  , namespace = config.get('urlNamespace')
-  , serveStatic = require('serve-static');
+var express = require('express'),
+  bodyParser = require('body-parser'),
+  methodOverride = require('method-override'),
+  session = require('cookie-session'),
+  logger = require('morgan'),
+  app = express(),
+  users = require('./routes/users'),
+  templates = require('./routes/templates'),
+  achievements = require('./routes/achievements'),
+  passport = require('passport'),
+  GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
+  mongoose = require('mongoose'),
+  User = mongoose.model('User'),
+  moment = require('moment'),
+  config = require('config'),
+  namespace = config.get('urlNamespace'),
+  serveStatic = require('serve-static');
 
 passport.serializeUser(users.serialize);
 passport.deserializeUser(users.deserialize);
@@ -32,8 +32,10 @@ passport.use(new GoogleStrategy({
     callbackURL: config.get('googleCallbackUrl')
   },
   function(accessToken, refreshToken, profile, done) {
-    if(profile.emails[0].value.match(/@u2i\.com$/)) {
-      User.findOne({ email: profile.emails[0].value }, function(err, user) {
+    if (profile.emails[0].value.match(/@u2i\.com$/)) {
+      User.findOne({
+        email: profile.emails[0].value
+      }, function(err, user) {
         if (!user) {
           var usr = new User();
           usr.name = profile.displayName;
@@ -41,7 +43,9 @@ passport.use(new GoogleStrategy({
           usr.photoUrl = profile._json.picture;
           usr.save(function(err) {
             if (err) {
-              done(null, false, { message: "User creation failed"});
+              done(null, false, {
+                message: "User creation failed"
+              });
             } else {
               done(err, user);
             }
@@ -51,7 +55,9 @@ passport.use(new GoogleStrategy({
         }
       });
     } else {
-      done(null, false, { message: "User is not from the u2i domain"})
+      done(null, false, {
+        message: "User is not from the u2i domain"
+      });
     }
   }
 ));
@@ -61,7 +67,7 @@ app.use(bodyParser.json());
 app.use(methodOverride());
 app.use(session({
   secret: config.get('sessionSecret'),
-  expires: moment().add(1,'years').toDate(),
+  expires: moment().add(1, 'years').toDate(),
   path: namespace
 }));
 app.use(passport.initialize());
@@ -82,15 +88,22 @@ app.route(namespace + '/templates/:id')
 app.route(namespace + '/achievements(.json)?')
   .post(users.ensureAuthenticated, achievements.create);
 
-app.route(namespace + '/auth/google').get(passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login',
-                                            'email'] }));
+app.route(namespace + '/auth/google').get(passport.authenticate('google', {
+  scope: ['https://www.googleapis.com/auth/plus.login',
+    'email'
+  ]
+}));
 
-app.route(namespace + '/auth/google/callback').get(passport.authenticate('google', { failureRedirect: namespace + '/' }), function(req, res) {
+app.route(namespace + '/auth/google/callback').get(passport.authenticate('google', {
+  failureRedirect: namespace + '/'
+}), function(req, res) {
   res.redirect(namespace + '/');
 });
 
-app.use(serveStatic('public', {'index': ['index.html']}));
+app.use(serveStatic('public', {
+  'index': ['index.html']
+}));
 
 var server = app.listen(config.get('port'), function() {
-    console.log('Listening on port %d', server.address().port);
+  console.log('Listening on port %d', server.address().port);
 });
