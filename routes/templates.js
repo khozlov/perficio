@@ -7,7 +7,7 @@ var mongoose = require('mongoose'),
 module.exports.show = function(req, res, next) {
   Template.findById(req.params.id, function(err, template) {
     if (err) {
-      res.json(503, {
+      res.status(503).json({
         error: "Something went wrong"
       });
     } else {
@@ -19,7 +19,7 @@ module.exports.show = function(req, res, next) {
 module.exports.index = function(req, res, next) {
   Template.find(function(err, templates) {
     if (err) {
-      res.json(503, {
+      res.status(503).json({
         error: "Something went wrong"
       });
     } else {
@@ -36,7 +36,7 @@ module.exports.create = function(req, res, next) {
   template.author = req.session.passport.user
   template.save(function(err, template) {
     if (err) {
-      res.json(503, {
+      res.status(503).json({
         error: err
       });
     } else {

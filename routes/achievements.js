@@ -8,12 +8,12 @@ var mongoose = require('mongoose'),
 module.exports.create = function(req, res, next) {
   Template.findById(req.body.templateId, function(err, template) {
     if (err) {
-      res.json(503, {
+      res.status(503).json({
         error: "Something went wrong"
       });
     } else {
-      if (template == null) {
-        res.json(404, {
+      if (template === null) {
+        res.status(404).json({
           error: "Template not found"
         });
       } else {
@@ -23,12 +23,12 @@ module.exports.create = function(req, res, next) {
           template: req.body.templateId
         }, function(err, achievement) {
           if (err) {
-            res.json(503, {
+            res.status(503).json({
               error: "Something went wrong"
             });
           } else {
-            if (achievement != null) {
-              res.json(409, {
+            if (achievement !== null) {
+              res.status(409).json({
                 error: "You already granted this chievement to this person"
               });
             } else {
@@ -37,7 +37,7 @@ module.exports.create = function(req, res, next) {
                 template: req.body.templateId
               }, function(err, achievement) {
                 if (err) {
-                  res.json(503, {
+                  res.status(503).json({
                     error: "Something went wrong"
                   });
                 } else {
@@ -54,7 +54,7 @@ module.exports.create = function(req, res, next) {
                   }
                   achievement.save(function(err, achievement) {
                     if (err) {
-                      res.json(503, {
+                      res.status(503).json({
                         error: "Something went wrong"
                       });
                     } else {
@@ -75,7 +75,7 @@ module.exports.index = function(req, res, next) {
   var sortOrder = req.body.sort || 'name';
   Achievement.findByUser(req.body.ownerId, sortOrder, function(err, achievements) {
     if (err) {
-      res.json(503, {
+      res.status(503).json({
         error: "Something went wrong"
       });
     } else {

@@ -12,19 +12,19 @@ var mongoose = require('mongoose'),
 module.exports.show = function(req, res, next) {
   User.findById(req.params.id, function(err, usr) {
     if (err) {
-      res.json(503, {
+      res.status(503).json({
         error: "Something went wrong"
       });
     } else {
       populateUserAchievements(usr, function(err, usr) {
         if (err) {
-          res.json(503, {
+          res.status(503).json({
             error: "Something went wrong"
           });
         } else {
           populateUserUnachieved(usr, function(err, usr) {
             if (err) {
-              res.json(503, {
+              res.status(503).json({
                 error: "Something went wrong " + err
               });
             } else {
@@ -40,7 +40,7 @@ module.exports.show = function(req, res, next) {
 module.exports.current = function(req, res, next) {
   User.findById(req.session.passport.user, function(err, usr) {
     if (err) {
-      res.json(503, {
+      res.status(503).json({
         error: "Something went wrong"
       });
     } else {
@@ -52,13 +52,13 @@ module.exports.current = function(req, res, next) {
 module.exports.index = function(req, res, next) {
   User.find().select('name photoUrl').exec(function(err, users) {
     if (err) {
-      res.json(503, {
+      res.status(503).json({
         error: "Something went wrong"
       });
     } else {
       async.mapLimit(users, 50, populateUserAchievements, function(err, plainUsers) {
         if (err) {
-          res.json(503, {
+          res.status(503).json({
             error: "Something went wrong"
           });
         } else {
