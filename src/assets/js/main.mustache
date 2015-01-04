@@ -57,10 +57,7 @@ perficioApp.controller('UserController', function($scope, $http, $stateParams) {
         $scope.user.unachieved.splice(index, 1);
       }
     });
-    $http.post('{{urlNamespace}}/achievements', {
-      ownerId: $stateParams.id,
-      templateId: templateId
-    }).success(
+    $http.post('{{urlNamespace}}/users/' + $stateParams.id + '/grant/' + templateId).success(
       function(data) {
         $scope.user.achievements.unshift(data);
       }

@@ -1,0 +1,6 @@
+{
+  "sessionSecret": "testtesttest",
+  "googleClientId": "1",
+  "googleClientSecret": "secret",
+  "mongoUri": "localhost/perficio-test"
+}
