@@ -23,7 +23,7 @@ The app provides you with the option to mount it at a specific path, so you don'
 
 Also, to properly configure passport the app needs to know what `domain` it's running under so don't forget to put it into the config.
 
-If you don't want just anyone to have access to your app, you can specify a regex pattern (`userFilterRegexp`) that all new user email will be matched against. Those who won't much won't join.
+If you don't want just anyone to have access to your app, you can specify a regex pattern (`userFilterRegexp`) that all new user email will be matched against. Those who won't match won't join.
 
 And last but not least set your own `sessionSecret` that will be used to encrypt session cookies. Your life may depend on it (well, maybe not but it's still a good idea).
 
