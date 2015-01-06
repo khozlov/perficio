@@ -1,6 +1,6 @@
 {
   "name": "perficio",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "API Express application for creating achievement systems",
   "keywords": [
     "achievements",

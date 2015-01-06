@@ -18,7 +18,7 @@ gulp.task('css', function() {
 gulp.task('js', function() {
   return gulp.src('src/assets/js/*.mustache')
     .pipe(hogan({
-      urlNamespace: config.get('urlNamespace')
+      mountPoint: config.get('mountPoint')
     }))
     .pipe(gulp.dest('public/assets/js/'))
 });

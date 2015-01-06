@@ -9,11 +9,11 @@ perficioApp.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
   $stateProvider
     .state('users', {
       url: "/users",
-      templateUrl: "{{urlNamespace}}/ng-templates/users.html"
+      templateUrl: "{{mountPoint}}/ng-templates/users.html"
     })
     .state('user', {
       url: "/user/:id",
-      templateUrl: "{{urlNamespace}}/ng-templates/user.html"
+      templateUrl: "{{mountPoint}}/ng-templates/user.html"
     });
 
 
@@ -35,7 +35,7 @@ perficioApp.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
 perficioApp.controller('UserListController', function($scope, $http) {
   $scope.users = [];
-  $http.get('{{urlNamespace}}/users').success(function(data) {
+  $http.get('{{mountPoint}}/users').success(function(data) {
     var users = data;
     for (var i = 0; i < users.length; i++) {
       users[i]['achievementsCount'] = users[i].achievements.length;
@@ -47,7 +47,7 @@ perficioApp.controller('UserListController', function($scope, $http) {
 
 perficioApp.controller('UserController', function($scope, $http, $stateParams) {
 
-  $http.get('{{urlNamespace}}/users/' + $stateParams.id).success(function(data) {
+  $http.get('{{mountPoint}}/users/' + $stateParams.id).success(function(data) {
     $scope.user = data;
   });
 
@@ -57,7 +57,7 @@ perficioApp.controller('UserController', function($scope, $http, $stateParams) {
         $scope.user.unachieved.splice(index, 1);
       }
     });
-    $http.post('{{urlNamespace}}/users/' + $stateParams.id + '/grant/' + templateId).success(
+    $http.post('{{mountPoint}}/users/' + $stateParams.id + '/grant/' + templateId).success(
       function(data) {
         $scope.user.achievements.unshift(data);
       }
