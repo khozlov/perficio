@@ -1,0 +1,30 @@
+.radial-progress
+	$circle-size = 200px
+	$circle-background = #eee
+	$circle-color = #3a9240
+	$transition-length = 2s
+
+	margin 0px
+	width  $circle-size
+	height $circle-size
+
+	background-color $circle-background
+	border-radius 50%
+	.circle
+		.mask, .fill 
+			width $circle-size
+			height $circle-size
+			position absolute
+
+			border-radius 50%
+
+			transition -webkit-transform $transition-length
+			transition -ms-transform $transition-length
+			transition transform $transition-length
+			-webkit-backface-visibility hidden
+		
+		.mask 
+			clip rect(0px, $circle-size, $circle-size, $circle-size/2)
+			.fill 
+				clip rect(0px, $circle-size/2, $circle-size, 0px)
+				background-color $circle-color

@@ -39,7 +39,7 @@ perficioApp.controller('UserListController', function($scope, $http) {
     var users = data;
     for (var i = 0; i < users.length; i++) {
       users[i]['achievementsCount'] = users[i].achievements.length;
-      users[i].achievements = users[i].achievements.slice(0, Math.min(5, users[i]['achievementsCount']));
+      //users[i].achievements = users[i].achievements.slice(0, Math.min(5, users[i]['achievementsCount']));
     }
     $scope.users = users;
   });
@@ -64,3 +64,46 @@ perficioApp.controller('UserController', function($scope, $http, $stateParams) {
     )
   }
 });
+
+$(window).resize(function(){
+  honeycomb()
+});
+
+
+$(window).load(function(){
+  honeycomb();
+  draw_circle(180);
+
+});
+
+var transform_styles = ['-webkit-transform', '-ms-transform', 'transform'];
+var draw_circle = function(_deg) {
+  var rotation = Math.floor(_deg);
+  var fill_rotation = rotation;
+  var fix_rotation = rotation * 2;
+  for(i in transform_styles) {
+    $('.circle .fill, .circle .mask.full').css(transform_styles[i], 'rotate(' + fill_rotation + 'deg)');
+    $('.circle .fill.fix').css(transform_styles[i], 'rotate(' + fix_rotation + 'deg)');
+  }
+}
+
+
+var honeycomb = function(){
+  $('.achievements-list').removeAttr('style').find('.clear').remove();
+  var w = $('.achievements-list').width();
+  var aw = $('.achievement-small').outerWidth(true);
+  var row = Math.floor(w / aw);
+  var w = $('.achievements-list').width(row * aw );
+  $('.achievement-small').each(function(i, e){
+    $(e).removeAttr('style');
+    if(i == row-1 || i == row * 2 + (row - 1) -1 || i == row * 4 + (row - 2) -1 || i == row * 6 + (row - 3) -1) {
+      $(e).css('margin-right', 0);
+      $('<div class="clear"></div>').insertAfter(e);
+    }
+    if(i == row || i == row * 2 + (row - 1) || i == row * 4 + (row - 2) || i == row * 6 + (row - 3)) {
+      $(e).css('margin-left', '31px');
+    }
+  });
+  $('<div class="clear"></div>').insertAfter('.achievement-small:last');
+
+}
