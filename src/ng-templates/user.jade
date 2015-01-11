@@ -1,3 +1,53 @@
+.container(ng-controller='UserController as userCtrl')
+  
+  .col-md-8.col-md-offset-2.container-dark
+    .corners.corner-top
+    .corners.corner-bottom
+    .col-md-3
+      .profile
+        .profile-image-container
+          img.profile-image(ng-src="{{user.photoUrl}}", height="180")
+          img.profile-image-mask(src='/assets/images/hex_profile@2x.png', height="180")
+        .title {{user.name}}
+
+    .col-md-9 
+      .title Achievements
+      .achievements-list
+        a.achievement-small.achievement-small-dark(ng-repeat='achievement in user.unachieved', 
+                                                   ng-click="grantAchievement(achievement._id)", 
+                                                   alt="{{achievement.name}}", 
+                                                   href="#")
+          img.achievement-small-dark-bg(src='/assets/images/hex_small_achievement@2x.png', width='52')
+          img.icon(ng-src="{{achievement.imageUrl}}", width='30', alt="{{achievement.name}}")
+        //(ng-repeat='achievement in user.unachieved')
+          .achievement-small.achievement-small-dark.enabled
+            img.achievement-small-dark-bg(src='/assets/images/hex_small_achievement@2x.png', width='52')
+            img.icon(src='/assets/icons/coffee_maker.png', width='30')
+
+
+.container
+  .col-md-8.col-md-offset-2.container-light
+    .corners.corner-top
+    .corners.corner-bottom
+    .col-md-3
+      .achievement
+        .achievement-icon-container
+          .radial-progress
+            .circle
+              .mask.full
+                .fill
+              .mask.half
+                .fill
+                .fill.fix
+
+          img.achievement-bg(src='/assets/images/hex_achievement@2x.png', height="180")
+          img.achievement-icon(src='/assets/icons/coffee_maker.png', height="80")
+        
+
+    //- .col-md-9 
+    //-   .title God bless you!
+          
+
 .userDetails(ng-controller='UserController as userCtrl')
   .userHeader
     img.userPhoto(ng-src="{{user.photoUrl}}")
