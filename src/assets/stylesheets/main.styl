@@ -7,35 +7,70 @@ center-block()
   display block
   margin-left auto
   margin-right auto
+  
+box-shadow()
+  -webkit-box-shadow arguments
+  box-shadow arguments
+  
+text-shadow()
+  text-shadow 1px 1px 1px #254722
+  
+retina(_background-image, _background-size)
+  @media screen and (-webkit-min-device-pixel-ratio: 1.3), (min--moz-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6/2), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx)
+    background url(_background-image) no-repeat
+    background-size _background-size
+
+$green = #3a9240
+$green_d = #2f7934
+$grey = #eee
+
+.clear
+  clear both
+
+h1, h2
+  text-align center
+  color #fff
+  padding-bottom 20px
+  text-shadow 0 0 2px #666
 
 body
   font-family "Montserrat"
   font-weight 400
-  font-size 18px
-  background-color whitesmoke
+  font-size 14px
+  background-color white
+
+  a
+    cursor pointer
 
 header
   position relative
-  background #4f8a20 url("/images/noise-e1e99bdf.png")
-  text-shadow 1px 1px 1px #254722
+  background $green url("http://u2i.com/images/noise-e1e99bdf.png")
+  text-shadow()
   height 100px
   margin-bottom 40px
   color #fff
 
   .wrapper
-    width 960px
-    margin auto
+    max-width 960px
+    width 100%
     text-align right
+    margin: 0 auto
 
     .logo
       margin 0
       padding 0
       border 0
+      
+      img
+        margin-right 10px
 
       a
         float left
         height 61px
-        padding: 20px 20px
+        padding 20px 20px
+        color #fff
+        text-decoration none
+        text-shadow()
 
     nav
       margin-left 20px
@@ -50,14 +85,15 @@ header
 footer
   position relative
   background #254722
-  text-shadow 1px 1px 1px #254722
+  text-shadow()
   color #fff
   padding 30px 0
   margin-top 40px
 
   .wrapper
-    width 960px
-    margin auto
+    max-width 960px
+    width 100%
+    margin: 0 auto
     text-align center
     font-size 0.8em
 
@@ -75,16 +111,6 @@ footer
   border 5px #5F8D39 solid
   width 96px
   height 96px
-
-.row
-  border-radius 5px
-  background-color #fff
-  border 3px #254722 solid
-  width 80%
-  padding 10px 0
-  center-block()
-  cursor pointer
-  color #254722
 
   > div
     height 96px
@@ -105,10 +131,6 @@ footer
   .achievementCount
     display table-cell
     vertical-align: middle
-
-.row:hover
-  color #254722
-  text-decoration none
 
 .userDetails
   width 80%
@@ -150,4 +172,187 @@ footer
 
   .locked
     opacity 0.5
-    cursor pointer
+    cursor pointer  
+
+.container-light
+  background-color $grey 
+  
+  .title
+    color $green
+  
+.container-dark
+  background-color $green
+  color $grey
+  
+  .title
+    color $grey
+
+.container-light,
+.container-dark
+  position relative
+  padding 15px
+  
+  .title
+    text-align center
+    text-transform capitalize
+    font-size 22px
+    line-height 24px
+    text-shadow()
+    padding 5px 0
+    
+  
+  .corners
+    width 25px
+    height 15px
+    position: absolute
+    z-index 99
+    background url('../images/corners.png') no-repeat
+    retina('../images/corners@2x.png', 12px 27px)
+
+    &.corner-top
+      background-position: right top
+      top 0
+      right 0
+    &.corner-bottom
+      background-position left bottom
+      bottom 0
+      left 0
+      
+.profile
+  &.users
+    width 200px
+    float left
+  
+  .profile-image-container
+    width 156px
+    height 180px
+    overflow hidden
+    margin 0 auto
+    position relative
+    display block
+    
+    .achievements-count
+      position absolute
+      bottom 15px
+      left 65px
+      width 25px
+      height 28px
+      line-height 28px
+      vertical-align middle
+      text-align center
+      background url('../images/hex_level.png') no-repeat
+      background-position 50% 50%
+      retina('../images/hex_level@2x.png', 25px 27px)
+      color #fff
+  
+    .profile-image-mask
+      position absolute
+      top 0
+      
+    .profile-image
+      position absolute
+      
+.achievement
+  
+  .achievement-icon-container
+    width 156px
+    height 180px
+    overflow hidden
+    margin 0 auto
+
+    .radial-progress
+      position relative
+      z-index 10
+      margin-left -21px
+
+    .achievement-bg
+      position absolute
+      z-index 20
+      top 0
+      
+    .achievement-icon
+      position absolute
+      top 50px
+      margin-left 40px
+      z-index 30
+    
+  .achievement-info
+      text-align center
+    h3,
+    strong
+      color $green    
+      font-weight bold
+    
+    .grant-achievement
+      display block
+      background $green
+      color #fff
+      width 150px
+      border-bottom 4px solid $green_d
+      padding 5px
+      margin: 20px auto
+      box-shadow 0 2px 3px rgba(0,0,0,0.5)
+      text-decoration none
+      
+      &:hover
+        margin-top: 22px
+        border-bottom 2px solid $green_d
+        box-shadow 0 2px 2px rgba(0,0,0,0.3)
+
+    .granted
+      vertical-align middle
+      line-height 60px
+      .user-small
+        margin-left 10px
+        vertical-align middle
+        line-height 60px
+        display inline-block
+        position relative
+        overflow hidden
+        height 59px
+        width 52px
+        
+        .user-small-bg
+          position absolute
+          z-index 10
+        // .user-photo
+        
+
+    
+.achievements-list
+  // padding 10px 15px
+  margin 10px auto 20px
+
+  .achievement-small
+    position relative
+    display block
+    float: left
+    margin-right 10px
+    margin-bottom -4px
+    opacity .7
+    
+    &.enabled
+      opacity 1
+      .icon
+        opacity 1
+    
+    .icon
+      position absolute
+      top 14px
+      left 11px
+      opacity 0.3  
+
+
+.popup,
+.popup-achieved
+  //text-shadow()
+  margin-top 20px
+  //max-width 400px
+  display none
+  //position absolute
+  //z-index 100
+  //box-shadow 0 0 10px rgba(0,0,0,0.5)
+  
+  
+
+

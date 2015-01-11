@@ -14,6 +14,7 @@ html(class="no-js")
     title u2i is gamified
 
     link(rel='stylesheet', href='assets/vendor/bootstrap/dist/css/bootstrap.css')
+    link(rel='stylesheet', href='assets/css/circle.css')
     link(rel='stylesheet', href='assets/css/main.css')
     link(href='//fonts.googleapis.com/css?family=Montserrat:400,700', rel='stylesheet', type='text/css')
         
@@ -27,15 +28,14 @@ html(class="no-js")
     header
       .wrapper
         h1.logo
-          a(href='http://www.u2i.com')
-            img(width='104', height='61', alt='u2i', src='http://www.u2i.com/images/logo-67ce536e.png')
+          a(href='{{mountPoint}}/#/users')
+            img(alt='u2i is gamified', height="60", src='/assets/images/perficio_logo.png') 
+            | Perficio
         nav
-          a(href='http://www.u2i.com/why-hire-us.html') Why hire us
-          a(href='http://www.u2i.com/why-join-us.html') Why join us
-          a(href='http://www.u2i.com/our-work.html') Our work
-          a(href='http://www.u2i.com/we-are-hiring.html') We're hiring
-          a(href='http://blog.u2i.com') Blog
-          a(href='http://www.u2i.com/contact.html') Contact
+          //- a(href='{{mountPoint}}/#/stream') Live stream
+          a(href='{{mountPoint}}/#/users') Users
+          //- a(href='{{mountPoint}}/#/achievements') Achievements
+          a(href='{{mountPoint}}/#/feedback') Feedback
     main(ui-view='')
     footer
       .wrapper
@@ -50,4 +50,4 @@ html(class="no-js")
             img(height='50' src='http://www.u2i.com/images/li-icon-ebea50f6.png')
           a(href='https://www.youtube.com/channel/UC59UaSQnX0qMuofHy_plF-Q')
             img(height='50', src='http://www.u2i.com/images/yt-icon-d837aa25.png')
-        .copyright © 2013 u2i LLC. All rights reserved.
+        .copyright © 2015 u2i LLC. All rights reserved.

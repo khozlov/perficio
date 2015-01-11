@@ -1,23 +1,63 @@
-.userDetails(ng-controller='UserController as userCtrl')
-  .userHeader
-    img.userPhoto(ng-src="{{user.photoUrl}}")
-    {{user.name}}
-  .achievement.unlocked(ng-repeat='achievement in user.achieved')
-    .achievementImage
-      img(ng-src="{{achievement.imageUrl}}")
-    .achievementDetails
-      {{achievement.name}}
-      br
-      span.description
-        {{achievement.description}}
-    .clearfix
-  .divider
-  .achievement.locked(ng-repeat='achievement in user.unachieved', ng-click="grantAchievement(achievement._id)")
-    .achievementImage
-      img(ng-src="{{achievement.imageUrl}}")
-    .achievementDetails
-      {{achievement.name}}
-      br
-      span.description
-        {{achievement.description}}
-    .clearfix
+div(ng-controller='UserController as userCtrl')
+  .container
+    
+    .col-md-8.col-md-offset-2.container-dark
+      .corners.corner-top
+      .corners.corner-bottom
+      .col-md-3
+        .profile
+          .profile-image-container
+            img.profile-image(ng-src="{{user.photoUrl}}", height="180")
+            img.profile-image-mask(src='/assets/images/hex_profile@2x.png', height="180")
+          .title {{user.name}}
+
+      .col-md-9 
+        .title Achievements
+        .achievements-list
+          span.achievement-small.achievement-small-dark(ng-repeat='achievement in user.unachieved', 
+                                                     ng-click="showAchievementPopup(achievement)", 
+                                                     title="{{achievement.name}}")
+            img.achievement-small-dark-bg(src='/assets/images/hex_small_achievement@2x.png', width='52')
+            img.icon(ng-src="{{achievement.imageUrl}}", width='30', alt="{{achievement.name}}")
+          
+          a.achievement-small.achievement-small-dark.enabled(ng-repeat='achievement in user.achieved', 
+                                                     ng-click="showAchievementPopup(achievement)")
+            img.achievement-small-dark-bg(src='/assets/images/hex_small_achievement@2x.png', width='52')
+            img.icon(src='{{achievement.imageUrl}}', width='30', alt="{{achievement.name}}")
+
+  .container
+    .popup.col-md-6.col-md-offset-3.container-light(ng-controller="PopupController")
+      .corners.corner-top
+      .corners.corner-bottom
+      .achievement
+        .col-md-5
+          .achievement-icon-container
+            .radial-progress
+              .circle
+                .mask.full
+                  .fill
+                .mask.half
+                  .fill
+                  .fill.fix
+            img.achievement-bg(ng-src='/assets/images/hex_achievement@2x.png', height="180")
+            img.achievement-icon(ng-src="{{templateData.imageUrl}}", height="80")
+
+        .col-md-7
+          .achievement-info
+            h3
+              {{templateData.name}}
+            span.description
+              {{templateData.description}}
+            div(ng-if="!templateData.grantedBy")
+              a.grant-achievement(ng-click="grantAchievement(templateData._id)") Grant Achievement
+            div(ng-if="templateData.grantedBy")
+              br
+              br
+              .granted 
+                | @ 
+                strong {{templateData.createdAt | limitTo: 10}} 
+                | by: 
+              
+                a.user-small(ui-sref="user({ id: templateData.grantedBy[0]._id })")
+                  img.user-small-bg(src='/assets/images/hex_small_profile@2x.png', width='52')
+                  img.user-photo(src='{{templateData.grantedBy[0].photoUrl}}', width='61', alt="{{templateData.grantedBy[0].name}}")

@@ -1,3 +1,4 @@
+var _timeout = 100;
 var perficioApp = angular.module('perficioApp', ['ui.router']);
 
 perficioApp.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -13,7 +14,8 @@ perficioApp.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
     })
     .state('user', {
       url: "/user/:id",
-      templateUrl: "{{mountPoint}}/ng-templates/user.html"
+      templateUrl: "{{mountPoint}}/ng-templates/user.html",
+      controller: 'UserController'
     });
 
 
@@ -32,6 +34,20 @@ perficioApp.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
   });
 });
 
+perficioApp.controller('PopupController', ['$scope', function ($scope) {
+    $scope.$on('show-popup', function(event, td, ac, uc) {
+      $('.popup').show();
+      $('.popup-achieved').hide();
+      slideTo('.popup');
+      $scope.templateData = td;
+      draw_circle(0);
+      setTimeout(function(){
+        draw_circle(360 / (uc / ac), '2s');
+      }, _timeout);
+    });
+
+}]);
+
 
 perficioApp.controller('UserListController', function($scope, $http) {
   $scope.users = [];
@@ -43,13 +59,47 @@ perficioApp.controller('UserListController', function($scope, $http) {
     }
     $scope.users = users;
   });
+  setTimeout(function(){
+    honeycomb('.users-list','.profile.users', '100px');
+  }, _timeout);
 });
 
 perficioApp.controller('UserController', function($scope, $http, $stateParams) {
 
   $http.get('{{mountPoint}}/users/' + $stateParams.id).success(function(data) {
     $scope.user = data;
+    setTimeout(function(){
+      honeycomb('.achievements-list','.achievement-small', '31px');
+    }, _timeout);
   });
+
+  $scope.showAchievementPopup = function(_obj){
+    var td = _obj; //template data
+    var ac; //counts users with this achievement
+    var uc; //counts users
+    var tid = (typeof td.grantedBy === 'undefined') ? tid = td._id : tid = td.template; //template id
+    
+    function async_show(){
+      if(typeof ac !== 'undefined' && typeof uc !== 'undefined' && typeof td !== 'undefined') {
+        $scope.$broadcast('show-popup', td, ac, uc);
+      }
+    }
+
+    $http.get('{{mountPoint}}/templates/' + tid + '/achievements/count').success(
+      function(data) {
+        ac = data.count;
+        async_show();
+      }
+    );
+
+    $http.get('{{mountPoint}}/users/count').success(
+      function(data) {
+        uc = data.count;
+        async_show();
+      }
+    );
+  }
+
 
   $scope.grantAchievement = function(templateId) {
     angular.forEach($scope.user.unachieved, function(template, index) {
@@ -61,6 +111,68 @@ perficioApp.controller('UserController', function($scope, $http, $stateParams) {
       function(data) {
         $scope.user.achievements.unshift(data);
       }
-    )
+    );
   }
+
 });
+
+
+$(window).resize(function(){
+  honeycomb('.achievements-list','.achievement-small', '31px');
+  honeycomb('.users-list','.profile.users', '100px');
+});
+
+
+$(window).load(function(){
+  //honeycomb('.achievements-list','.achievement-small', '31px');
+  //honeycomb('.users-list','.profile.users', '100px');
+  //draw_circle(307);
+});
+
+var transform_styles = ['-webkit-transform', '-ms-transform', 'transform'];
+var transition_styles = ['-webkit-transition', '-ms-transition', 'transition'];
+var draw_circle = function(_deg, _time) {
+  _time = typeof _time !== 'undefined' ? _time : '0s';
+  var rotation = Math.floor(_deg/2);
+  var fill_rotation = rotation;
+  var fix_rotation = rotation * 2;
+  for(i in transform_styles) {
+    $('.circle .fill, .circle .mask.full').css(transform_styles[i], 'rotate(' + fill_rotation + 'deg)').css(transition_styles[i], transform_styles[i] + ' ' + _time);
+    $('.circle .fill.fix').css(transform_styles[i], 'rotate(' + fix_rotation + 'deg)').css(transition_styles[i], transform_styles[i] + ' ' + _time);
+  }
+}
+
+var slideTo = function(_obj) {
+  var top = $(_obj).offset();
+  $('html, body').animate({scrollTop: top.top - 50}, 400);
+}
+
+var honeycomb = function(_container, _element, _margin){
+
+  $(_container).removeAttr('style').find('.clear').remove();
+  var w = $(_container).width();
+  var aw = $(_element).outerWidth(true);
+  var row = Math.floor(w / aw);
+  $(_container).width(row * aw );
+  var cm = (w - aw*row) / 2;
+  $(_container).css('margin-left', cm);
+
+  if(row > 1) {
+    $(_element).each(function(i, e){
+      $(e).removeAttr('style');
+      if(i == row-1 || i == row * 2 + (row - 1) -1 || i == row * 4 + (row - 2) -1 || i == row * 6 + (row - 3) -1) {
+        $(e).css('margin-right', 0);
+        $('<div class="clear"></div>').insertAfter(e);
+      }
+      if(i == row || i == row * 2 + (row - 1) || i == row * 4 + (row - 2) || i == row * 6 + (row - 3)) {
+        $(e).css('margin-left', _margin);
+      }
+    });
+  } else {
+    $(_element).each(function(i, e){
+      $(e).css('margin-left', 0); 
+    }); 
+  }
+  $('<div class="clear"></div>').insertAfter(_element+':last');
+
+}
