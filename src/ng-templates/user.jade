@@ -2,7 +2,7 @@
   .userHeader
     img.userPhoto(ng-src="{{user.photoUrl}}")
     {{user.name}}
-  .achievement.unlocked(ng-repeat='achievement in user.achievements')
+  .achievement.unlocked(ng-repeat='achievement in user.achieved')
     .achievementImage
       img(ng-src="{{achievement.imageUrl}}")
     .achievementDetails

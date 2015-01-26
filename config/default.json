@@ -1,7 +1,6 @@
 {
   "domain": "localhost:3000",
   "mountPoint": "",
-  "googleCallbackUrl": "/auth/google/callback",
   "mongoUri": "localhost/perficio",
   "mongoUser": "",
   "mongoPassword": "",

@@ -9,5 +9,5 @@ div(ng-controller='UserListController as usersListCtrl')
       .col-md-1
           .achievementCount
             {{user.achievementsCount}}
-      .col-md-1.recentAchievement(ng-repeat='achievement in user.achievements')          
+      .col-md-1.recentAchievement(ng-repeat='achievement in user.achieved')          
         img(ng-src="{{achievement.imageUrl}}") 

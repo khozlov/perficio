@@ -38,8 +38,8 @@ perficioApp.controller('UserListController', function($scope, $http) {
   $http.get('{{mountPoint}}/users').success(function(data) {
     var users = data;
     for (var i = 0; i < users.length; i++) {
-      users[i]['achievementsCount'] = users[i].achievements.length;
-      users[i].achievements = users[i].achievements.slice(0, Math.min(5, users[i]['achievementsCount']));
+      users[i]['achievementsCount'] = users[i].achieved.length;
+      users[i].achievements = users[i].achieved.slice(0, Math.min(5, users[i]['achievementsCount']));
     }
     $scope.users = users;
   });

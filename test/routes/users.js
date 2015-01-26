@@ -101,12 +101,12 @@ describe('user routes', function() {
           expect(res.body[userIdMap[user1.id]].name).to.equal('Han Solo');
           expect(res.body[userIdMap[user1.id]].photoUrl).to.equal('dummyUrl');
           expect(res.body[userIdMap[user1.id]].email).to.be.undefined;
-          expect(res.body[userIdMap[user1.id]].achievements.length).to.equal(2);
+          expect(res.body[userIdMap[user1.id]].achieved.length).to.equal(2);
 
           expect(res.body[userIdMap[user2.id]].name).to.equal('Jewbacka');
           expect(res.body[userIdMap[user2.id]].photoUrl).to.equal('anotherDummyUrl');
           expect(res.body[userIdMap[user2.id]].email).to.be.undefined;
-          expect(res.body[userIdMap[user2.id]].achievements.length).to.equal(1);
+          expect(res.body[userIdMap[user2.id]].achieved.length).to.equal(1);
           done();
         });
     });
@@ -130,8 +130,8 @@ describe('user routes', function() {
           expect(res.body.name).to.equal('Jewbacka');
           expect(res.body.photoUrl).to.equal('anotherDummyUrl');
           expect(res.body.email).to.be.undefined;
-          expect(res.body.achievements.length).to.equal(1);
-          expect(res.body.achievements[0]._id).to.equal(achievement3.id);
+          expect(res.body.achieved.length).to.equal(1);
+          expect(res.body.achieved[0]._id).to.equal(achievement3.id);
           expect(res.body.unachieved.length).to.equal(1);
           expect(res.body.unachieved[0]._id).to.equal(template2.id);
           done();

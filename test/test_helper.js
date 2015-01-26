@@ -5,6 +5,10 @@ if (process.env.NODE_ENV != 'test') {
 }
 
 require('../lib/models/db');
+require('../lib/models/user');
+require('../lib/models/achievement');
+require('../lib/models/template');
+
 var mongoose = require('mongoose'),
   async = require('async'),
   Keygrip = require('keygrip'),

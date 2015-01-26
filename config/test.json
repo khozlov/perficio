@@ -2,5 +2,6 @@
   "sessionSecret": "testtesttest",
   "googleClientId": "1",
   "googleClientSecret": "secret",
-  "mongoUri": "localhost/perficio-test"
+  "mongoUri": "localhost/perficio-test",
+  "userFilterRegexp": ".*@rebelion\\.com"
 }
