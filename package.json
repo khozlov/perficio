@@ -22,6 +22,7 @@
     "config": "^1.10.0",
     "cookie-session": "^1.1.0",
     "express": "^4.11.1",
+    "lodash": "^3.0.0",
     "method-override": "^2.3.1",
     "moment": "^2.9.0",
     "mongoose": "^3.8.22",
@@ -40,7 +41,6 @@
     "gulp-mocha": "^2.0.0",
     "gulp-stylus": "^2.0.0",
     "keygrip": "^1.0.1",
-    "lodash": "^2.4.1",
     "main-bower-files": "^2.4.1",
     "sinon": "^1.12.2",
     "sinon-chai": "^2.6.0"
