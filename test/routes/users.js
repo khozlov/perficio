@@ -110,7 +110,7 @@ describe('user routes', function() {
           done();
         });
     });
-  })
+  });
 
   describe("#show", function() {
     it("is a success", function(done) {
@@ -297,6 +297,27 @@ describe('user routes', function() {
               done();
             });
           });
+      });
+    });
+  });
+
+  describe("#count", function() {
+    it("is a success", function(done) {
+      chai.request(app)
+      .get('/users/count')
+      .end(function(err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(200);
+        done();
+      });
+    });
+
+    it("returns a total number of all users", function(done) {
+      chai.request(app)
+      .get('/users/count')
+      .end(function(err, res) {
+        expect(res.body.count).to.equal(2);
+        done();
       });
     });
   });

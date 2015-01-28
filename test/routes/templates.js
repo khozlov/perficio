@@ -7,7 +7,8 @@ var helper = require('../test_helper'),
   app = require('../../lib/app'),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
-  Template = mongoose.model('Template');
+  Template = mongoose.model('Template'),
+  Achievement = mongoose.model('Achievement');
 
 chai.use(chaiHttp);
 
@@ -85,7 +86,7 @@ describe('templates routes', function() {
           done();
         });
     });
-  })
+  });
 
   describe("#show", function() {
 
@@ -131,7 +132,7 @@ describe('templates routes', function() {
           done();
         });
     });
-  })
+  });
 
   describe("#create", function() {
     it("responds with 401 when user is not authenticated", function(done) {
@@ -232,6 +233,59 @@ describe('templates routes', function() {
               done();
             });
           });
+      });
+    });
+  });
+
+  describe('#achievementCount', function(){
+    var achievement1, achievement2;
+
+    beforeEach(function(done) {
+      template1 = new Template({
+        'name': 'Gold medal',
+        'description': 'For achieveiving something',
+        'imageUrl': 'someUrl',
+        'author': user1
+      });
+      achievement1 = new Achievement({
+        'name': 'Gold medal',
+        'description': 'For achieveiving something',
+        'imageUrl': 'someUrl',
+        'owner': user1,
+        'template': template1,
+        'grantedBy': [user2]
+      });
+      achievement2 = new Achievement({
+        'name': 'Gold medal',
+        'description': 'For achieveiving something',
+        'imageUrl': 'someUrl',
+        'owner': user2,
+        'template': template1,
+        'grantedBy': [user1]
+      });
+      template1.save(function() {
+        achievement1.save(function() {
+          achievement2.save(done);
+        });
+      });
+    });
+
+    it("is a success", function(done) {
+      chai.request(app)
+      .get('/templates/' + template1.id + '/achievements/count')
+      .end(function(err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(200);
+        done();
+      });
+    });
+
+    it("count all achievement for a given template", function(done) {
+      chai.request(app)
+      .get('/templates/' + template1.id + '/achievements/count')
+      .end(function(err, res) {
+        expect(res.body.count).to.equal(2);
+        done();
       });
     });
   });
