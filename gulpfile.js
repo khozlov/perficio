@@ -5,7 +5,7 @@ var gulp = require('gulp'),
   config = require('config'),
   mainBowerFiles = require('main-bower-files'),
   mocha = require('gulp-mocha');
-  
+
 // --- Basic Tasks ---
 gulp.task('css', function() {
   return gulp.src('src/assets/stylesheets/*.styl')
@@ -20,7 +20,7 @@ gulp.task('js', function() {
     .pipe(hogan({
       mountPoint: config.get('mountPoint')
     }))
-    .pipe(gulp.dest('public/assets/js/'))
+    .pipe(gulp.dest('public/assets/js/'));
 });
 
 gulp.task('templates', function() {
