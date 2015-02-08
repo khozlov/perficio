@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/khozlov/perficio.svg?branch=master)](https://travis-ci.org/khozlov/perficio)
 [![Code Climate](https://codeclimate.com/github/khozlov/perficio/badges/gpa.svg)](https://codeclimate.com/github/khozlov/perficio)
+[![Coverage Status](https://coveralls.io/repos/khozlov/perficio/badge.svg)](https://coveralls.io/r/khozlov/perficio)
 [![Dependency Status](https://gemnasium.com/khozlov/perficio.svg)](https://gemnasium.com/khozlov/perficio)
 
 A node app for creating achievement systems.
