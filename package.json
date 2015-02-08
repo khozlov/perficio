@@ -37,11 +37,13 @@
   "devDependencies": {
     "chai": "^1.10.0",
     "chai-http": "^1.0.0",
+    "coveralls": "^2.11.2",
     "gulp": "^3.8.10",
     "gulp-hogan": "^1.1.0",
     "gulp-jade": "^0.11.0",
     "gulp-mocha": "^2.0.0",
     "gulp-stylus": "^2.0.0",
+    "istanbul": "^0.3.5",
     "keygrip": "^1.0.1",
     "main-bower-files": "^2.4.1",
     "sinon": "^1.12.2",
