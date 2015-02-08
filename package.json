@@ -14,7 +14,7 @@
   "scripts": {
     "test": "NODE_ENV=test gulp test",
     "coverage": "NODE_ENV=test `npm bin`/istanbul cover gulp test",
-    "coveralls": "NODE_ENV=test `npm bin`/istanbul cover gulp test --report lcovonly && node bin/coveralls.js < coverage/lcov.info"
+    "coveralls": "NODE_ENV=test `npm bin`/istanbul cover gulp test --report lcovonly && `npm bin`/coveralls.js < coverage/lcov.info"
   },
   "author": "Pawel Kozlowski",
   "license": "MIT",
