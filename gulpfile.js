@@ -5,7 +5,8 @@ var gulp = require('gulp'),
   config = require('config'),
   mainBowerFiles = require('main-bower-files'),
   mocha = require('gulp-mocha');
-
+  imageop = require('gulp-image-optimization');
+  
 // --- Basic Tasks ---
 gulp.task('css', function() {
   return gulp.src('src/assets/stylesheets/*.styl')
@@ -31,9 +32,25 @@ gulp.task('templates', function() {
     .pipe(gulp.dest('public/'));
 });
 
+gulp.task('images', function() {
+  return gulp.src(['src/assets/img/*.png','src/assets/img/*.jpg','src/assets/img/*.gif','src/assets/img/*.jpeg']).pipe(imageop({
+    optimizationLevel: 5,
+    progressive: true,
+    interlaced: true
+  })).pipe(gulp.dest('public/assets/images/'));
+});
+
+gulp.task('icons', function() {
+  return gulp.src(['src/assets/icons/*.png','src/assets/icons/*.jpg','src/assets/icons/*.gif','src/assets/icons/*.jpeg']).pipe(imageop({
+    optimizationLevel: 5,
+    progressive: true,
+    interlaced: true
+  })).pipe(gulp.dest('public/assets/icons/'));
+});
+
 gulp.task('watch', function() {
   gulp.watch('src/assets/stylesheets/*.styl', ['css']);
-  gulp.watch('src/assets/js/*.js.mustache', ['js']);
+  gulp.watch('src/assets/js/*.mustache', ['js']);
   gulp.watch('src/**/*.jade', ['templates']);
 
 });
@@ -57,4 +74,4 @@ gulp.task('test', function() {
 });
 
 // Default Task
-gulp.task('default', ['js', 'css', 'templates', 'vendor', 'watch']);
+gulp.task('default', ['js', 'css', 'images', 'icons', 'templates', 'vendor', 'watch']);
