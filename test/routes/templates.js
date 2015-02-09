@@ -289,4 +289,44 @@ describe('templates routes', function() {
       });
     });
   });
+
+  describe("#count", function() {
+    beforeEach(function(done) {
+      template1 = new Template({
+        'name': 'Gold medal',
+        'description': 'For achieveiving something',
+        'imageUrl': 'someUrl',
+        'author': user1
+      });
+      template2 = new Template({
+        'name': 'Bronze medal',
+        'description': 'For achieveiving something else',
+        'imageUrl': 'someOtherUrl',
+        'author': user2
+      });
+
+      template1.save(function() {
+        template2.save(done);
+      });
+    });
+    
+    it("is a success", function(done) {
+      chai.request(app)
+      .get('/templates/count')
+      .end(function(err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(200);
+        done();
+      });
+    });
+
+    it("returns a total number of all templates", function(done) {
+      chai.request(app)
+      .get('/templates/count')
+      .end(function(err, res) {
+        expect(res.body.count).to.equal(2);
+        done();
+      });
+    });
+  });
 });
