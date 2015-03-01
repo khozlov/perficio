@@ -5,14 +5,14 @@ if (process.env.NODE_ENV != 'test') {
 }
 
 require('../lib/models/db');
-require('../lib/models/user');
-require('../lib/models/achievement');
-require('../lib/models/template');
 
 var mongoose = require('mongoose'),
   async = require('async'),
   Keygrip = require('keygrip'),
-  config = require('config');
+  config = require('config'),
+  factories = require('./factories.js');
+
+module.exports.factories = factories;
 
 module.exports.clearDb = function(done) {
   async.each(mongoose.modelNames(), function(name, callback) {

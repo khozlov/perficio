@@ -6,55 +6,22 @@ var helper = require('../test_helper'),
   expect = require('chai').expect,
   app = require('../../lib/app'),
   mongoose = require('mongoose'),
-  User = mongoose.model('User'),
-  Template = mongoose.model('Template'),
-  Achievement = mongoose.model('Achievement');
+  Template = mongoose.model('Template');
 
 chai.use(chaiHttp);
 
 describe('templates routes', function() {
 
-  var user1, user2, template1, template2;
-
-  //TODO: Refactor setup
-  beforeEach(function(done) {
-    user1 = new User({
-      'name': 'Han Solo',
-      'email': 'han.solo@rebelion.com',
-      'photoUrl': 'dummyUrl',
-      'admin': true
-    });
-    user2 = new User({
-      'name': 'Jewbacka',
-      'email': 'fury@rebelion.com',
-      'photoUrl': 'anotherDummyUrl'
-    });
-
-    helper.clearDb(function() {
-      user1.save(function() {
-        user2.save(done);
-      });
-    });
-  });
-
   describe("#index", function() {
 
-    beforeEach(function(done) {
-      template1 = new Template({
-        'name': 'Gold medal',
-        'description': 'For achieveiving something',
-        'imageUrl': 'someUrl',
-        'author': user1
-      });
-      template2 = new Template({
-        'name': 'Bronze medal',
-        'description': 'For achieveiving something else',
-        'imageUrl': 'someOtherUrl',
-        'author': user2
-      });
+    var templates;
 
-      template1.save(function() {
-        template2.save(done);
+    before(function(done) {
+      helper.clearDb(function() {
+        helper.factories.createList('Template', 2, function(err, createdTemplates) {
+          templates = createdTemplates;
+          done();
+        });
       });
     });
 
@@ -72,17 +39,20 @@ describe('templates routes', function() {
       chai.request(app)
         .get('/templates')
         .end(function(err, res) {
+          var templateIdMap = helper.idMap(res.body),
+            resTemplate1 = res.body[templateIdMap[templates[0].id]],
+            resTemplate2 = res.body[templateIdMap[templates[1].id]];
           expect(res.body.length).to.equal(2);
-          var templateIdMap = helper.idMap(res.body);
-          expect(res.body[templateIdMap[template1.id]].name).to.equal('Gold medal');
-          expect(res.body[templateIdMap[template1.id]].imageUrl).to.equal('someUrl');
-          expect(res.body[templateIdMap[template1.id]].description).to.equal('For achieveiving something');
-          expect(res.body[templateIdMap[template1.id]].author).to.equal(user1.id);
 
-          expect(res.body[templateIdMap[template2.id]].name).to.equal('Bronze medal');
-          expect(res.body[templateIdMap[template2.id]].imageUrl).to.equal('someOtherUrl');
-          expect(res.body[templateIdMap[template2.id]].description).to.equal('For achieveiving something else');
-          expect(res.body[templateIdMap[template2.id]].author).to.equal(user2.id);
+          expect(resTemplate1.name).to.equal(templates[0].name);
+          expect(resTemplate1.imageUrl).to.equal(templates[0].imageUrl);
+          expect(resTemplate1.description).to.equal(templates[0].description);
+          expect(resTemplate1.author).to.equal(templates[0].author.id);
+
+          expect(resTemplate2.name).to.equal(templates[1].name);
+          expect(resTemplate2.imageUrl).to.equal(templates[1].imageUrl);
+          expect(resTemplate2.description).to.equal(templates[1].description);
+          expect(resTemplate2.author).to.equal(templates[1].author.id);
           done();
         });
     });
@@ -90,20 +60,20 @@ describe('templates routes', function() {
 
   describe("#show", function() {
 
-    beforeEach(function(done) {
-      template1 = new Template({
-        'name': 'Gold medal',
-        'description': 'For achieveiving something',
-        'imageUrl': 'someUrl',
-        'author': user1
-      });
+    var template;
 
-      template1.save(done);
+    before(function(done) {
+      helper.clearDb(function() {
+        helper.factories.create('Template', function(err, createdTemplate) {
+          template = createdTemplate;
+          done();
+        });
+      });
     });
 
     it("is a success", function(done) {
       chai.request(app)
-        .get('/templates/' + template1.id)
+        .get('/templates/' + template.id)
         .end(function(err, res) {
           expect(err).to.be.null;
           expect(res).to.have.status(200);
@@ -113,12 +83,12 @@ describe('templates routes', function() {
 
     it("returns the template", function(done) {
       chai.request(app)
-        .get('/templates/' + template1.id)
+        .get('/templates/' + template.id)
         .end(function(err, res) {
-          expect(res.body.name).to.equal('Gold medal');
-          expect(res.body.imageUrl).to.equal('someUrl');
-          expect(res.body.description).to.equal('For achieveiving something');
-          expect(res.body.author).to.equal(user1.id);
+          expect(res.body.name).to.equal(template.name);
+          expect(res.body.imageUrl).to.equal(template.imageUrl);
+          expect(res.body.description).to.equal(template.description);
+          expect(res.body.author).to.equal(template.author.id);
           done();
         });
     });
@@ -135,13 +105,29 @@ describe('templates routes', function() {
   });
 
   describe("#create", function() {
+    var admin, regular;
+
+    beforeEach(function(done) {
+      helper.clearDb(function() {
+        helper.factories.create('User', {
+          admin: true
+        }, function(err, createdUser1) {
+          helper.factories.create('User', function(err, createdUser2) {
+            admin = createdUser1;
+            regular = createdUser2;
+            done();
+          });
+        });
+      });
+    });
+
     it("responds with 401 when user is not authenticated", function(done) {
       chai.request(app)
         .post('/templates')
         .send({
-          name: 'Silver medal',
+          name: 'Bronze medal',
           description: 'For being not quite the best',
-          imageUrl: 'silverUrl'
+          imageUrl: 'bronzeUrl'
         })
         .end(function(err, res) {
           expect(err).to.be.null;
@@ -155,13 +141,13 @@ describe('templates routes', function() {
         .post('/templates')
         .set('Cookie', helper.sessionCookies({
           'passport': {
-            'user': user2.id
+            'user': regular.id
           }
         }))
         .send({
-          name: 'Silver medal',
+          name: 'Bronze medal',
           description: 'For being not quite the best',
-          imageUrl: 'silverUrl'
+          imageUrl: 'bronzeUrl'
         })
         .end(function(err, res) {
           expect(err).to.be.null;
@@ -172,20 +158,20 @@ describe('templates routes', function() {
 
     it("creates the template", function(done) {
       Template.count({
-        author: user1
+        author: admin
       }, function(err, count) {
         expect(count).to.equal(0);
         chai.request(app)
           .post('/templates')
           .set('Cookie', helper.sessionCookies({
             'passport': {
-              'user': user1.id
+              'user': admin.id
             }
           }))
           .send({
-            name: 'Silver medal',
+            name: 'Bronze medal',
             description: 'For being not quite the best',
-            imageUrl: 'silverUrl'
+            imageUrl: 'bronzeUrl'
           })
           .end(function(err, res) {
             expect(err).to.be.null;
@@ -193,10 +179,10 @@ describe('templates routes', function() {
             Template.find({}, function(err, templates) {
               expect(err).to.be.null;
               expect(templates.length).to.equal(1);
-              expect(templates[0].name).to.equal('Silver medal');
+              expect(templates[0].name).to.equal('Bronze medal');
               expect(templates[0].description).to.equal('For being not quite the best');
-              expect(templates[0].imageUrl).to.equal('silverUrl');
-              expect(templates[0].author.toString()).to.equal(user1.id.toString());
+              expect(templates[0].imageUrl).to.equal('bronzeUrl');
+              expect(templates[0].author.toString()).to.equal(admin.id.toString());
               done();
             });
           });
@@ -205,14 +191,14 @@ describe('templates routes', function() {
 
     it("returns the created template", function(done) {
       Template.count({
-        author: user1
+        author: admin
       }, function(err, count) {
         expect(count).to.equal(0);
         chai.request(app)
           .post('/templates')
           .set('Cookie', helper.sessionCookies({
             'passport': {
-              'user': user1.id
+              'user': admin.id
             }
           }))
           .send({
@@ -237,56 +223,72 @@ describe('templates routes', function() {
     });
   });
 
-  describe('#achievementCount', function(){
-    var achievement1, achievement2;
+  describe('#achievementCount', function() {
+    var template;
 
-    beforeEach(function(done) {
-      template1 = new Template({
-        'name': 'Gold medal',
-        'description': 'For achieveiving something',
-        'imageUrl': 'someUrl',
-        'author': user1
-      });
-      achievement1 = new Achievement({
-        'name': 'Gold medal',
-        'description': 'For achieveiving something',
-        'imageUrl': 'someUrl',
-        'owner': user1,
-        'template': template1,
-        'grantedBy': [user2]
-      });
-      achievement2 = new Achievement({
-        'name': 'Gold medal',
-        'description': 'For achieveiving something',
-        'imageUrl': 'someUrl',
-        'owner': user2,
-        'template': template1,
-        'grantedBy': [user1]
-      });
-      template1.save(function() {
-        achievement1.save(function() {
-          achievement2.save(done);
+    before(function(done) {
+      helper.clearDb(function() {
+        helper.factories.createList('User', 2, function(err, createdUsers) {
+          helper.factories.createList('Template', 2, function(err, createdTemplates) {
+            template = createdTemplates[0];
+            helper.factories.create('Achievement', {
+              template: createdTemplates[0],
+              owner: createdUsers[0]
+            }, function() {
+              helper.factories.create('Achievement', {
+                template: createdTemplates[0],
+                owner: createdUsers[1]
+              }, done);
+            });
+          });
         });
       });
     });
 
     it("is a success", function(done) {
       chai.request(app)
-      .get('/templates/' + template1.id + '/achievements/count')
-      .end(function(err, res) {
-        expect(err).to.be.null;
-        expect(res).to.have.status(200);
-        done();
+        .get('/templates/' + template.id + '/achievements/count')
+        .end(function(err, res) {
+          expect(err).to.be.null;
+          expect(res).to.have.status(200);
+          done();
+        });
+    });
+
+    it("counts all achievement for a given template", function(done) {
+      chai.request(app)
+        .get('/templates/' + template.id + '/achievements/count')
+        .end(function(err, res) {
+          expect(res.body.count).to.equal(2);
+          done();
+        });
+    });
+  });
+
+  describe("#count", function() {
+    before(function(done) {
+      helper.clearDb(function() {
+        helper.factories.createList('Template', 3, done);
       });
     });
 
-    it("count all achievement for a given template", function(done) {
+    it("is a success", function(done) {
       chai.request(app)
-      .get('/templates/' + template1.id + '/achievements/count')
-      .end(function(err, res) {
-        expect(res.body.count).to.equal(2);
-        done();
-      });
+        .get('/templates/count')
+        .end(function(err, res) {
+          expect(err).to.be.null;
+          expect(res).to.have.status(200);
+          done();
+        });
+    });
+
+    it("returns a total number of all templates", function(done) {
+      chai.request(app)
+        .get('/templates/count')
+        .end(function(err, res) {
+          expect(res.body.count).to.equal(3);
+          done();
+        });
     });
   });
 });
