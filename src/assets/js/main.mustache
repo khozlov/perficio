@@ -36,9 +36,7 @@ perficioApp.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
 perficioApp.controller('PopupController', ['$scope', function ($scope) {
     $scope.$on('show-popup', function(event, td, ac, uc) {
-      $('.popup').show();
-      $('.popup-achieved').hide();
-      slideTo('.popup');
+      $('.popup').slideDown(200);
       $scope.templateData = td;
       draw_circle(0);
       setTimeout(function(){
@@ -124,9 +122,8 @@ $(window).resize(function(){
 
 
 $(window).load(function(){
-  //honeycomb('.achievements-list','.achievement-small', '31px');
-  //honeycomb('.users-list','.profile.users', '100px');
-  //draw_circle(307);
+  honeycomb('.achievements-list','.achievement-small', '31px');
+  honeycomb('.users-list','.profile.users', '100px');
 });
 
 var transform_styles = ['-webkit-transform', '-ms-transform', 'transform'];
@@ -140,11 +137,6 @@ var draw_circle = function(_deg, _time) {
     $('.circle .fill, .circle .mask.full').css(transform_styles[i], 'rotate(' + fill_rotation + 'deg)').css(transition_styles[i], transform_styles[i] + ' ' + _time);
     $('.circle .fill.fix').css(transform_styles[i], 'rotate(' + fix_rotation + 'deg)').css(transition_styles[i], transform_styles[i] + ' ' + _time);
   }
-}
-
-var slideTo = function(_obj) {
-  var top = $(_obj).offset();
-  $('html, body').animate({scrollTop: top.top - 50}, 400);
 }
 
 var honeycomb = function(_container, _element, _margin){
