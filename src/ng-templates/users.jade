@@ -1,5 +1,3 @@
-
-
 .container(ng-controller='UserListController as usersListCtrl')
   .col-md-12.container-dark.users-list
 
@@ -7,18 +5,6 @@
 
     .corners.corner-top
     .corners.corner-bottom
-    .profile.users(ng-repeat='user in users')
-      a.profile-image-container(ui-sref="user({ id: user._id })")
-        img.profile-image(ng-src="{{user.photoUrl}}", height="180")
-        img.profile-image-mask(src='/assets/images/hex_profile@2x.png', height="180")
-        .achievements-count {{user.achievementsCount}}
-
-    .profile.users(ng-repeat='user in users')
-      a.profile-image-container(ui-sref="user({ id: user._id })")
-        img.profile-image(ng-src="{{user.photoUrl}}", height="180")
-        img.profile-image-mask(src='/assets/images/hex_profile@2x.png', height="180")
-        .achievements-count {{user.achievementsCount}}
-
     .profile.users(ng-repeat='user in users')
       a.profile-image-container(ui-sref="user({ id: user._id })")
         img.profile-image(ng-src="{{user.photoUrl}}", height="180")
