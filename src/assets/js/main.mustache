@@ -120,10 +120,21 @@ $(window).resize(function(){
   honeycomb('.users-list','.profile.users', '100px');
 });
 
+$(document).ready(function(){
+  $('#feedback-trigger').on('click', function(e){
+    $('#feedback').fadeToggle(300);
+    e.preventDefault()
+  });
+  $('#feedback .close').on('click', function(e){
+    $('#feedback').fadeToggle(300);
+    e.preventDefault()
+  });
+})
 
 $(window).load(function(){
   honeycomb('.achievements-list','.achievement-small', '31px');
   honeycomb('.users-list','.profile.users', '100px');
+
 });
 
 var transform_styles = ['-webkit-transform', '-ms-transform', 'transform'];
