@@ -51,16 +51,11 @@ div(ng-controller='UserController as userCtrl')
       .col-md-9 
         .title Achievements
         .achievements-list
-          a.achievement-small.achievement-small-dark(ng-repeat='achievement in user.unachieved', 
+          a.achievement-small.achievement-small-dark(ng-repeat='achievement in achievements',
                                                      ng-click="showAchievementPopup(achievement)", 
-                                                     title="{{achievement.name}}")
+                                                     title="{{achievement.name}}",
+                                                     ng-class="achievement.grantedBy ? 'enabled' : ''")
             img.achievement-small-dark-bg(src='/assets/images/hex_small_achievement@2x.png', width='52')
             img.icon(ng-src="{{achievement.imageUrl}}", width='30', alt="{{achievement.name}}")
-          
-          a.achievement-small.achievement-small-dark.enabled(ng-repeat='achievement in user.achieved', 
-                                                     ng-click="showAchievementPopup(achievement)", 
-                                                     title="{{achievement.name}}")
-            img.achievement-small-dark-bg(src='/assets/images/hex_small_achievement@2x.png', width='52')
-            img.icon(src='{{achievement.imageUrl}}', width='30', alt="{{achievement.name}}")
 
   

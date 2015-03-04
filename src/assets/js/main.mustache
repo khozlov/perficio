@@ -66,6 +66,8 @@ perficioApp.controller('UserController', function($scope, $http, $stateParams) {
 
   $http.get('{{mountPoint}}/users/' + $stateParams.id).success(function(data) {
     $scope.user = data;
+    $scope.achievements = data.achieved.concat(data.unachieved).sort(function(a, b){ return a.name < b.name ? -1 : 1; });
+    console.log($scope.achievements)
     setTimeout(function(){
       honeycomb('.achievements-list','.achievement-small', '31px');
     }, _timeout);
@@ -160,22 +162,13 @@ var honeycomb = function(_container, _element, _margin){
   var cm = (w - aw*row) / 2;
   $(_container).css('margin-left', cm);
 
-  if(row > 1) {
-    $(_element).each(function(i, e){
-      $(e).removeAttr('style');
-      if(i == row-1 || i == row * 2 + (row - 1) -1 || i == row * 4 + (row - 2) -1 || i == row * 6 + (row - 3) -1) {
-        $(e).css('margin-right', 0);
-        $('<div class="clear"></div>').insertAfter(e);
-      }
-      if(i == row || i == row * 2 + (row - 1) || i == row * 4 + (row - 2) || i == row * 6 + (row - 3)) {
-        $(e).css('margin-left', _margin);
-      }
-    });
-  } else {
-    $(_element).each(function(i, e){
-      $(e).css('margin-left', 0); 
-    }); 
+  var achievements = $(_element);
+  achievements.removeAttr('style');
+
+  for(var i = row; i < achievements.length; i = (i + 2 * row) - 1) {
+    $(achievements[i]).css('margin-left', _margin);
   }
+
   $('<div class="clear"></div>').insertAfter(_element+':last');
 
 }
