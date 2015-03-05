@@ -9,5 +9,5 @@
       a.profile-image-container(ui-sref="user({ id: user._id })")
         img.profile-image(ng-src="{{user.photoUrl}}", height="180")
         img.profile-image-mask(src='/assets/images/hex_profile@2x.png', height="180")
-        .achievements-count {{user.achievementsCount}}
+        .achievements-count(tooltip, title="have {{user.achievementsCount}} achievement{{(user.achievementsCount == 1) ? '' : 's'}}") {{user.achievementsCount}}
     

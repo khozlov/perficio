@@ -44,6 +44,31 @@ perficioApp.directive('honeycomb', ['$timeout', function ($timeout) {
   };
 }]);
 
+perficioApp.directive('tooltip', function ($document) {
+  return {
+    link: function (scope,element,attrs) { 
+      $(element).hover(function(){
+        // Hover over code
+        var title = $(this).attr('title');
+        $(this).data('tipText', title).removeAttr('title');
+        $('<p class="toolTip"></p>')
+        .text(title)
+        .appendTo('body')
+        .fadeIn(300);
+      }, function() {
+        // Hover out code
+        $(this).attr('title', $(this).data('tipText'));
+        $('.toolTip').remove();
+      }).mousemove(function(e) {
+        var mousex = e.pageX + 20; //Get X coordinates
+        var mousey = e.pageY + 10; //Get Y coordinates
+        $('.toolTip')
+        .css({ top: mousey, left: mousex })
+      });
+    }
+  }
+})
+
 perficioApp.controller('PopupController', function ($scope) {
     var unlockCount,
       usersCount,
@@ -54,9 +79,12 @@ perficioApp.controller('PopupController', function ($scope) {
     $scope.$on('show-popup', function(event, achievement, newUnlockCount, newUsersCount) {
       unlockCount = newUnlockCount;
       usersCount = newUsersCount;
-      $('.popup').slideDown(200);
+      $('#popup-container').fadeIn(300);
+      achievement.percent = (unlockCount / usersCount).toFixed(2) * 100;
+      achievement.unlockCount = unlockCount;
+      achievement.usersCount = usersCount;
       $scope.achievement = achievement;
-      markUnlocks(unlockCount,usersCount)
+      markUnlocks(unlockCount,usersCount);
     });
     $scope.$on('achievementGranted', function(event, achievement) {
       $scope.achievement = achievement;
@@ -128,7 +156,6 @@ perficioApp.controller('UserController', function($scope, $http, $stateParams) {
   }
 });
 
-
 $(window).resize(function(){
   honeycomb('.achievements-list','.achievement-small', '31px');
   honeycomb('.users-list','.profile.users', '100px');
@@ -143,13 +170,33 @@ $(document).ready(function(){
     $('#feedback').fadeToggle(300);
     e.preventDefault()
   });
+
+  $('.masterTooltip').on('hover', function(){
+    // Hover over code
+    var title = $(this).attr('title');
+    $(this).data('tipText', title).removeAttr('title');
+    $('<p class="tooltip"></p>')
+    .text(title)
+    .appendTo('body')
+    .fadeIn('slow');
+  }, function() {
+    // Hover out code
+    $(this).attr('title', $(this).data('tipText'));
+    $('.tooltip').remove();
+  }).on('mousemove', function(e) {
+    var mousex = e.pageX + 20; //Get X coordinates
+    var mousey = e.pageY + 10; //Get Y coordinates
+    $('.tooltip')
+    .css({ top: mousey, left: mousex })
+  });
+
 })
 
 var drawCircle = function(){
   var transform_styles = ['-webkit-transform', '-ms-transform', 'transform'];
   var transition_styles = ['-webkit-transition', '-ms-transition', 'transition'];
   return function(deg, time) {
-    time = typeof _time !== 'undefined' ? _time : '0s';
+    time = typeof time !== 'undefined' ? time : '0s';
     var rotation = Math.floor(deg/2);
     var fill_rotation = rotation;
     var fix_rotation = rotation * 2;
@@ -173,9 +220,12 @@ var honeycomb = function(container, element, margin){
   var achievements = $(element);
   achievements.removeAttr('style');
 
-  for(var i = row; i < achievements.length; i = (i + 2 * row) - 1) {
-    $(achievements[i]).css('margin-left', margin);
+  if(row > 1) {
+    for(var i = row; i < achievements.length; i = (i + 2 * row) - 1) {
+      $(achievements[i]).css('margin-left', margin);
+    }
   }
+
 
   $('<div class="clear"></div>').insertAfter(element+':last');
 
