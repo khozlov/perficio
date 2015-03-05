@@ -14,26 +14,28 @@ div(ng-controller='UserController as userCtrl')
                   .fill
                   .fill.fix
             img.achievement-bg(ng-src='/assets/images/hex_achievement@2x.png', height="180")
-            img.achievement-icon(ng-src="{{templateData.imageUrl}}", height="80")
+            img.achievement-icon(ng-src="{{achievement.imageUrl}}", height="80")
 
         .col-md-7
           .achievement-info
             h3
-              {{templateData.name}}
+              {{achievement.name}}
             span.description
-              {{templateData.description}}
-            div(ng-if="!templateData.grantedBy")
-              a.grant-achievement(ng-click="grantAchievement(templateData._id)") Grant Achievement
-            div(ng-if="templateData.grantedBy")
+              {{achievement.description}}
+            div(ng-if="!achievement.grantedBy")
+              a.grant-achievement(ng-click="grantAchievement(achievement._id)") Grant Achievement
+            div(ng-if="achievement.grantedBy")
               br
               br
               .granted  
-                | Granted by: 
-                a.user-small(ui-sref="user({ id: templateData.grantedBy[0]._id })",title="{{templateData.grantedBy[0].name}}")
-                  img.user-small-bg(src='/assets/images/hex_small_profile@2x.png', width='52')
-                  img.user-photo(src='{{templateData.grantedBy[0].photoUrl}}', width='61', alt="{{templateData.grantedBy[0].name}}")
+                | Granted 
+                span(ng-if="achievement.grantedBy[0].photoUrl")
+                  | by: 
+                  a.user-small(ui-sref="user({ id: achievement.grantedBy[0]._id })",title="{{achievement.grantedBy[0].name}}")
+                    img.user-small-bg(src='/assets/images/hex_small_profile@2x.png', width='52')
+                    img.user-photo(ng-src='{{achievement.grantedBy[0].photoUrl}}', width='61', alt="{{achievement.grantedBy[0].name}}")
                 | @ 
-                strong {{templateData.createdAt | limitTo: 10}}
+                strong {{achievement.createdAt | limitTo: 10}}
 
 
   .container
@@ -43,14 +45,14 @@ div(ng-controller='UserController as userCtrl')
       .corners.corner-bottom
       .col-md-3
         .profile
-          .profile-image-container
+          .profile-image-container(xxx)
             img.profile-image(ng-src="{{user.photoUrl}}", height="180")
             img.profile-image-mask(src='/assets/images/hex_profile@2x.png', height="180")
           .title {{user.name}}
 
       .col-md-9 
         .title Achievements
-        .achievements-list
+        .achievements-list(honeycomb)
           a.achievement-small.achievement-small-dark(ng-repeat='achievement in achievements',
                                                      ng-click="showAchievementPopup(achievement)", 
                                                      title="{{achievement.name}}",
