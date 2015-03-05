@@ -153,6 +153,11 @@ footer
     padding 10px
     background-color #fff
     border 2px #254722 solid
+    ::after
+      content '.'
+      height 0
+      visibility hidden
+      clear both
 
     img
       width 64px
@@ -340,11 +345,24 @@ footer
       left 11px
       opacity 0.3
 
-
-.popup,
-.popup-achieved
-  margin-bottom 20px
+#popup-container
+  position fixed
+  top 0
+  left 0
+  width 100%
+  height 100%
+  padding-top 20px
+  background rgba(0,0,0,0.7)
+  z-index 9999
   display none
+  
+  .popup
+    margin-top 100px
+    .close
+      position absolute
+      z-index 10
+      top 10px
+      right 10px
 
 .pos-rel
   position relative
