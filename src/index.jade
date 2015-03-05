@@ -25,6 +25,16 @@ html(class="no-js")
     script(type='text/javascript', src='assets/js/main.js')
           
   body(ng-app='perficioApp')
+    .container
+      .col-md-6.col-md-offset-3.col-sm-6.col-sm-offset-3.pos-rel
+        #feedback
+          h2 We love feedback!
+          p If you found a bug, have an idea or simply want to give as a kudos checkout 
+            a(href="#") this discourse topic.
+            br 
+            | There's also a Slack group.
+          h4 Thanks! 
+          .close &#10006;
     header
       .wrapper
         h1.logo
@@ -35,7 +45,7 @@ html(class="no-js")
           //- a(href='{{mountPoint}}/#/stream') Live stream
           a(href='{{mountPoint}}/#/users') Users
           //- a(href='{{mountPoint}}/#/achievements') Achievements
-          a(href='{{mountPoint}}/#/feedback') Feedback
+          a#feedback-trigger(href='#') Feedback
     main(ui-view='')
     footer
       .wrapper
