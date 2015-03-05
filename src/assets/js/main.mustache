@@ -60,7 +60,7 @@ perficioApp.directive('tooltip', function ($document) {
         $(this).attr('title', $(this).data('tipText'));
         $('.toolTip').remove();
       }).mousemove(function(e) {
-        var mousex = e.pageX + 20; //Get X coordinates
+        var mousex = e.pageX + 10; //Get X coordinates
         var mousey = e.pageY + 10; //Get Y coordinates
         $('.toolTip')
         .css({ top: mousey, left: mousex })
@@ -73,7 +73,7 @@ perficioApp.controller('PopupController', function ($scope) {
     var unlockCount,
       usersCount,
       markUnlocks = function(unlockCount, usersCount) {
-        drawCircle(0);
+        drawCircle(0,'0');
         drawCircle(360 / (usersCount / unlockCount), '2s');
       };
     $scope.$on('show-popup', function(event, achievement, newUnlockCount, newUsersCount) {
@@ -87,6 +87,9 @@ perficioApp.controller('PopupController', function ($scope) {
       markUnlocks(unlockCount,usersCount);
     });
     $scope.$on('achievementGranted', function(event, achievement) {
+      achievement.unlockCount = unlockCount+1;
+      achievement.usersCount = usersCount;
+      achievement.percent = (unlockCount+1 / usersCount).toFixed(2) * 100;
       $scope.achievement = achievement;
       markUnlocks(unlockCount+1,usersCount)
     });

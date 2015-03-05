@@ -1,7 +1,7 @@
 div(ng-controller='UserController as userCtrl')
   .container#popup-container
     .popup.col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2.container-light(ng-controller="PopupController")
-      .close(onclick="console.log('WTF');$('#popup-container').fadeOut(300);") &#10006;
+      .close(onclick="$('#popup-container').fadeOut(300);") &#10006;
       .achievement
         .col-md-5.col-sm-6
           .achievement-icon-container
