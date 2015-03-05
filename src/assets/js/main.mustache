@@ -44,6 +44,31 @@ perficioApp.directive('honeycomb', ['$timeout', function ($timeout) {
   };
 }]);
 
+perficioApp.directive('tooltip', function ($document) {
+  return {
+    link: function (scope,element,attrs) { 
+      $(element).hover(function(){
+        // Hover over code
+        var title = $(this).attr('title');
+        $(this).data('tipText', title).removeAttr('title');
+        $('<p class="toolTip"></p>')
+        .text(title)
+        .appendTo('body')
+        .fadeIn(300);
+      }, function() {
+        // Hover out code
+        $(this).attr('title', $(this).data('tipText'));
+        $('.toolTip').remove();
+      }).mousemove(function(e) {
+        var mousex = e.pageX + 20; //Get X coordinates
+        var mousey = e.pageY + 10; //Get Y coordinates
+        $('.toolTip')
+        .css({ top: mousey, left: mousex })
+      });
+    }
+  }
+})
+
 perficioApp.controller('PopupController', function ($scope) {
     var unlockCount,
       usersCount,
@@ -55,8 +80,11 @@ perficioApp.controller('PopupController', function ($scope) {
       unlockCount = newUnlockCount;
       usersCount = newUsersCount;
       $('#popup-container').fadeIn(300);
+      achievement.percent = (unlockCount / usersCount).toFixed(2) * 100;
+      achievement.unlockCount = unlockCount;
+      achievement.usersCount = usersCount;
       $scope.achievement = achievement;
-      markUnlocks(unlockCount,usersCount)
+      markUnlocks(unlockCount,usersCount);
     });
     $scope.$on('achievementGranted', function(event, achievement) {
       $scope.achievement = achievement;
@@ -128,25 +156,39 @@ perficioApp.controller('UserController', function($scope, $http, $stateParams) {
   }
 });
 
-$(window).load(function(){
-  // @TODO: Check why onload but not onready
-
-});
-
 $(window).resize(function(){
   honeycomb('.achievements-list','.achievement-small', '31px');
   honeycomb('.users-list','.profile.users', '100px');
 });
 
 $(document).ready(function(){
-  /*$('#feedback-trigger').on('click', function(e){
+  $('#feedback-trigger').on('click', function(e){
     $('#feedback').fadeToggle(300);
     e.preventDefault()
-  });*/
-  /*$('#feedback .close').on('click', function(e){
+  });
+  $('#feedback .close').on('click', function(e){
     $('#feedback').fadeToggle(300);
     e.preventDefault()
-  });*/
+  });
+
+  $('.masterTooltip').on('hover', function(){
+    // Hover over code
+    var title = $(this).attr('title');
+    $(this).data('tipText', title).removeAttr('title');
+    $('<p class="tooltip"></p>')
+    .text(title)
+    .appendTo('body')
+    .fadeIn('slow');
+  }, function() {
+    // Hover out code
+    $(this).attr('title', $(this).data('tipText'));
+    $('.tooltip').remove();
+  }).on('mousemove', function(e) {
+    var mousex = e.pageX + 20; //Get X coordinates
+    var mousey = e.pageY + 10; //Get Y coordinates
+    $('.tooltip')
+    .css({ top: mousey, left: mousex })
+  });
 
 })
 
