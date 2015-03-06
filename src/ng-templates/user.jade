@@ -12,7 +12,7 @@ div(ng-controller='UserController as userCtrl')
                 .mask.half
                   .fill
                   .fill.fix
-            img.achievement-bg(ng-src='/assets/images/hex_achievement@2x.png', height="180")
+            img.achievement-bg(ng-src='assets/images/hex_achievement@2x.png', height="180")
             img.achievement-icon(ng-src="{{achievement.imageUrl}}", height="80")
             .achievements-count(tooltip, title="{{achievement.unlockCount}} of {{achievement.usersCount}} users have this achievement") {{achievement.percent}}%
 
@@ -32,7 +32,7 @@ div(ng-controller='UserController as userCtrl')
                 span(ng-if="achievement.grantedBy[0].photoUrl")
                   | by: 
                   a.user-small(ui-sref="user({ id: achievement.grantedBy[0]._id })",title="{{achievement.grantedBy[0].name}}")
-                    img.user-small-bg(src='/assets/images/hex_small_profile@2x.png', width='52')
+                    img.user-small-bg(src='assets/images/hex_small_profile@2x.png', width='52')
                     img.user-photo(ng-src='{{achievement.grantedBy[0].photoUrl}}', width='61', alt="{{achievement.grantedBy[0].name}}")
                 | @ 
                 strong {{achievement.createdAt | limitTo: 10}}
@@ -47,7 +47,7 @@ div(ng-controller='UserController as userCtrl')
         .profile
           .profile-image-container(xxx)
             img.profile-image(ng-src="{{user.photoUrl}}", height="180")
-            img.profile-image-mask(src='/assets/images/hex_profile@2x.png', height="180")
+            img.profile-image-mask(src='assets/images/hex_profile@2x.png', height="180")
           .title {{user.name}}
 
       .col-md-9
@@ -58,7 +58,7 @@ div(ng-controller='UserController as userCtrl')
                                                      title="{{achievement.name}}",
                                                      ng-class="achievement.grantedBy ? 'enabled' : ''",
                                                      tooltip)
-            img.achievement-small-dark-bg(src='/assets/images/hex_small_achievement@2x.png', width='52')
+            img.achievement-small-dark-bg(src='assets/images/hex_small_achievement@2x.png', width='52')
             img.icon(ng-src="{{achievement.imageUrl}}", width='30', alt="{{achievement.name}}")
 
   

@@ -32,6 +32,10 @@ perficioApp.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
   });
 });
 
+perficioApp.run(function($rootScope) {
+  $rootScope.mountPoint = '{{mountPoint}}';
+});
+
 perficioApp.directive('honeycomb', ['$timeout', function ($timeout) {
   return {
     link: function (scope, elem, attrs) {
@@ -46,7 +50,7 @@ perficioApp.directive('honeycomb', ['$timeout', function ($timeout) {
 
 perficioApp.directive('tooltip', function ($document) {
   return {
-    link: function (scope,element,attrs) { 
+    link: function (scope,element,attrs) {
       $(element).hover(function(){
         // Hover over code
         var title = $(this).attr('title');
