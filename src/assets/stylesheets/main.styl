@@ -49,6 +49,8 @@ h1, h2
   color #fff
   padding-bottom 20px
   text-shadow 0 0 2px #666
+  &.dark
+    color $green
 
 body
   font-family "Montserrat"
@@ -244,7 +246,9 @@ footer
       left 0
 
 .profile
-  &.users
+  &.users,
+.profile
+  &.achievements
     width 200px
     float left
 
@@ -266,6 +270,10 @@ footer
 
     .profile-image
       position absolute
+      &.achievement
+        z-index 10
+        top 50px
+        left 40px
 
 .achievement
 
@@ -275,6 +283,7 @@ footer
     overflow hidden
     margin 0 auto
     position relative
+    display block
 
     .achievements-count
       achievementCount()
@@ -416,3 +425,20 @@ footer
   font-size 12px
   z-index 100
   box-shadow(0 2px 4px rgba(0,0,0,.5))
+
+.granted-arrow
+  color $green
+  font-size 20px !important
+  padding 0 10px
+  vertical-align middle
+
+.social
+  margin-top 20px
+  .fa
+    color $green
+    text-decoration none
+    margin 5px
+    font-size 20px
+    
+    &:hover
+      color $green_d !important

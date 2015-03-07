@@ -6,18 +6,27 @@ doctype html
 //if IE 8
   html(class="no-js lt-ie9", lang="en")
 // [if gt IE 8] <!
-html(class="no-js")
+html(class="no-js", ng-app='perficioApp')
   // <![endif]
-  head
+  head(ng-controller="SocialShareController")
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible",content="IE=edge,chrome=1")
     meta(name="viewport" content="width=device-width, initial-scale=1")
     title u2i is gamified
 
+    meta(property='og:type', content='article')
+    meta(property='og:site_name', content='{{ogModel.ogSitename}}')
+    meta(property='og:title', content='{{ogModel.ogTitle}}')
+    meta(property='og:description', content='{{ogModel.ogDesc}}')
+    meta(property='og:url', content='{{ogModel.ogUrl}}')
+    meta(property='og:image', content='{{ogModel.ogImage}}')
+
+
     link(rel="icon" type="image/png", sizes="96x96", href="assets/img/favicon-96x96.png")
     link(rel='stylesheet', href='assets/vendor/bootstrap/dist/css/bootstrap.css')
     link(rel='stylesheet', href='assets/css/circle.css')
     link(rel='stylesheet', href='assets/css/main.css')
+    link(rel='stylesheet', href='assets/vendor/font-awesome/css/font-awesome.css')
     link(href='//fonts.googleapis.com/css?family=Montserrat:400,700', rel='stylesheet', type='text/css')
         
     script(type='text/javascript', src='assets/vendor/angular/angular.js')
@@ -26,7 +35,7 @@ html(class="no-js")
     script(type='text/javascript', src='assets/vendor/bootstrap/dist/js/bootstrap.js')
     script(type='text/javascript', src='assets/js/main.js')
           
-  body(ng-app='perficioApp')
+  body
     .container
       .col-md-6.col-md-offset-3.col-sm-6.col-sm-offset-3.pos-rel
         #feedback
@@ -44,8 +53,9 @@ html(class="no-js")
             img(alt='u2i is gamified', height="60", src='assets/images/perficio_logo.png') 
             | u2i is gamified
         nav
-          //- a(href='{{mountPoint}}/#/stream') Live stream
-          //- a(href='{{mountPoint}}/#/achievements') Achievements
+          a(ng-sref='{{mountPoint}}/auth/google') Login
+          a(href='/#/users') Users
+          a(href='/#/achievements') Achievements
           a#feedback-trigger(href='#') Feedback
     main(ui-view='')
     footer

@@ -1,0 +1,20 @@
+.container(ng-controller='AchievementsListController as achievementsListCtrl')
+  .col-md-12.container-light.users-list(honeycomb)
+
+    h1.dark Achievements
+
+    .corners.corner-top
+    .corners.corner-bottom
+    .profile.users(ng-repeat='achievement in achievements')
+      a.profile-image-container(tooltip, title="{{achievement.name}}", ui-sref="achievement({ id: achievement._id })")
+        .radial-progress
+              .circle
+                .mask.full
+                  .fill
+                .mask.half
+                  .fill
+                  .fill.fix
+        img.profile-image.achievement(ng-src="{{achievement.imageUrl}}", height="80")
+        img.profile-image-mask(src='assets/images/hex_achievement@2x.png', height="180")
+        //- .achievements-count(tooltip, title="{{achievement.unlockCount}} of {{achievement.usersCount}} users have this achievement") {{achievement.percent}}%
+    

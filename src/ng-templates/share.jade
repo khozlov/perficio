@@ -1,0 +1,39 @@
+div(ng-controller='ShareController as shareCtrl')
+  .container
+    .col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2.container-light
+      .corners.corner-top
+      .corners.corner-bottom
+      .achievement
+        .col-md-5.col-sm-6
+          a.achievement-icon-container(ui-sref="achievement({ id: achievement.uid })")
+            .radial-progress
+              .circle
+                .mask.full
+                  .fill
+                .mask.half
+                  .fill
+                  .fill.fix
+            img.achievement-bg(ng-src='assets/images/hex_achievement@2x.png', height="180")
+            img.achievement-icon(ng-src="{{achievement.imageUrl}}", height="80")
+            .achievements-count(tooltip, title="{{achievement.unlockCount}} of {{achievement.usersCount}} users have this achievement") {{achievement.percent}}%
+
+        .col-md-7.col-sm-6
+          .achievement-info
+            h3
+              {{achievement.name}}
+            span.description
+              {{achievement.description}}
+            div
+              br
+              br
+              .granted  
+                a.user-small(tooltip, ui-sref="user({ id: achievement.grantedBy[0]._id })",title="{{achievement.grantedBy[0].name}}")
+                  img.user-small-bg(src='assets/images/hex_small_profile@2x.png', width='52')
+                  img.user-photo(ng-src='{{achievement.grantedBy[0].photoUrl}}', width='61', alt="{{achievement.grantedBy[0].name}}")
+                span.granted-arrow.fa.fa-long-arrow-right 
+                a.user-small(tooltip, ui-sref="user({ id: user._id })",title="{{user.name}}")
+                  img.user-small-bg(src='assets/images/hex_small_profile@2x.png', width='52')
+                  img.user-photo(ng-src='{{user.photoUrl}}', width='61', alt="{{user.name}}")
+              br
+              | @ 
+              strong {{achievement.createdAt | limitTo: 10}}
