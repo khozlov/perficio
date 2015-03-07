@@ -288,6 +288,7 @@ perficioApp.controller('UserController', function($scope, $http, $stateParams) {
 $(window).resize(function(){
   honeycomb('.achievements-list','.achievement-small', '31px');
   honeycomb('.users-list','.profile.users', '100px');
+  adjust_nav_functionality();
 });
 
 $(document).ready(function(){
@@ -300,26 +301,32 @@ $(document).ready(function(){
     e.preventDefault()
   });
 
-  $('.masterTooltip').on('hover', function(){
-    // Hover over code
-    var title = $(this).attr('title');
-    $(this).data('tipText', title).removeAttr('title');
-    $('<p class="tooltip"></p>')
-    .text(title)
-    .appendTo('body')
-    .fadeIn('slow');
-  }, function() {
-    // Hover out code
-    $(this).attr('title', $(this).data('tipText'));
-    $('.tooltip').remove();
-  }).on('mousemove', function(e) {
-    var mousex = e.pageX + 20; //Get X coordinates
-    var mousey = e.pageY + 10; //Get Y coordinates
-    $('.tooltip')
-    .css({ top: mousey, left: mousex })
+  $("#toggle-nav").click(function() {
+    $("nav").fadeToggle( 300 );
+    return false;
   });
+  adjust_nav_functionality();
+});
 
+$(window).load(function(){
+
+  
 })
+
+/**
+ *  Adjusts functionality of header navigation
+ */
+function adjust_nav_functionality() {
+  var innerWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+  window_width = Math.max( $( window ).width(), innerWidth );
+  if( window_width > 780 ){
+    $('nav').show();
+    $('#toggle-nav').hide();
+  }else if( window_width <= 780 ){
+    $('nav').hide();
+    $('#toggle-nav').show();
+  }
+}
 
 var drawCircle = function(){
   var transform_styles = ['-webkit-transform', '-ms-transform', 'transform'];
