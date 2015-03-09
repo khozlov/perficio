@@ -6,7 +6,7 @@
     .corners.corner-top
     .corners.corner-bottom
     .profile.users(ng-repeat='user in users')
-      a.profile-image-container(ui-sref="user({ id: user._id })")
+      a.profile-image-container(tooltip, ui-sref="user({ id: user._id })", title="{{user.name}}")
         img.profile-image(ng-src="{{user.photoUrl}}", height="180")
         img.profile-image-mask(src='assets/images/hex_profile@2x.png', height="180")
         .achievements-count(tooltip, title="have {{user.achievementsCount}} achievement{{(user.achievementsCount == 1) ? '' : 's'}}") {{user.achievementsCount}}

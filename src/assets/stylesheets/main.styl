@@ -49,6 +49,8 @@ h1, h2
   color #fff
   padding-bottom 20px
   text-shadow 0 0 2px #666
+  &.dark
+    color $green
 
 body
   font-family "Montserrat"
@@ -67,12 +69,13 @@ header
   height 100px
   margin-bottom 40px
   color #fff
+  z-index 50
 
   .wrapper
     max-width 960px
     width 100%
     text-align right
-    margin: 0 auto
+    margin 0 auto
 
     .logo
       margin 0
@@ -89,18 +92,51 @@ header
         color #fff
         text-decoration none
         text-shadow()
+  
+    #toggle-nav
+      font-size 30px
+      color #fff
+      position absolute
+      top 30px
+      right 30px
+      z-index 20
+      text-decoration none
+      &:hover
+        color $grey
 
     nav
       margin-left 20px
+      @media (max-width: 780px)
+        width 200px
+        z-index 10
+        float right
+        position absolute
+        top 100px
+        right 0
 
       a
         display inline-block
         padding 0 20px
         color #fff
         line-height 100px
-        text-decoration none
-        @media (max-width: 768px)
+        text-shadow()
+        box-shadow(none)
+        &:hover
+          text-decoration none
+
+        @media (max-width: 780px)
           padding 0 10px
+          line-height 50px
+          display block
+          width 200px
+          background $grey
+          text-decoration none
+          float right
+          color $green
+          text-shadow(none)
+          box-shadow(-2px 2px 5px rgba(0,0,0,.3))
+          &:hover
+            color $green_d
 
 footer
   position relative
@@ -113,7 +149,7 @@ footer
   .wrapper
     max-width 960px
     width 100%
-    margin: 0 auto
+    margin 0 auto
     text-align center
     font-size 0.8em
 
@@ -140,7 +176,7 @@ footer
 
   .userName
     display table-cell
-    vertical-align: middle
+    vertical-align middle
     font-family Arial
 
   .recentAchievement img
@@ -150,7 +186,7 @@ footer
 
   .achievementCount
     display table-cell
-    vertical-align: middle
+    vertical-align middle
 
 .userDetails
   width 80%
@@ -229,13 +265,13 @@ footer
   .corners
     width 25px
     height 15px
-    position: absolute
+    position absolute
     z-index 30
     background url('../images/corners.png') no-repeat
     retina('../images/corners@2x.png', 12px 27px)
 
     &.corner-top
-      background-position: right top
+      background-position right top
       top 0
       right 0
     &.corner-bottom
@@ -244,7 +280,9 @@ footer
       left 0
 
 .profile
-  &.users
+  &.users,
+.profile
+  &.achievements
     width 200px
     float left
 
@@ -266,6 +304,10 @@ footer
 
     .profile-image
       position absolute
+      &.achievement
+        z-index 10
+        top 50px
+        left 40px
 
 .achievement
 
@@ -275,6 +317,7 @@ footer
     overflow hidden
     margin 0 auto
     position relative
+    display block
 
     .achievements-count
       achievementCount()
@@ -310,12 +353,12 @@ footer
       width 150px
       border-bottom 4px solid $green_d
       padding 5px
-      margin: 20px auto
+      margin 20px auto
       box-shadow 0 2px 3px rgba(0,0,0,0.5)
       text-decoration none
 
       &:hover
-        margin-top: 22px
+        margin-top 22px
         border-bottom 2px solid $green_d
         box-shadow 0 2px 2px rgba(0,0,0,0.3)
 
@@ -344,7 +387,7 @@ footer
   .achievement-small
     position relative
     display block
-    float: left
+    float left
     margin-right 10px
     margin-bottom -4px
     opacity .7
@@ -390,7 +433,7 @@ footer
     background $grey
     box-shadow 0 3px 5px rgba(0,0,0,0.5)
     position absolute
-    z-index 10
+    z-index 100
     padding 15px
     margin-top 20px
 
@@ -416,3 +459,20 @@ footer
   font-size 12px
   z-index 100
   box-shadow(0 2px 4px rgba(0,0,0,.5))
+
+.granted-arrow
+  color $green
+  font-size 20px !important
+  padding 0 10px
+  vertical-align middle
+
+.social
+  margin-top 20px
+  .fa
+    color $green
+    text-decoration none
+    margin 5px
+    font-size 20px
+    
+    &:hover
+      color $green_d !important

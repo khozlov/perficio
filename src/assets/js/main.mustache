@@ -14,6 +14,18 @@ perficioApp.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
     .state('user', {
       url: "/user/:id",
       templateUrl: "{{mountPoint}}/ng-templates/user.html"
+    })
+    .state('achievement', {
+      url: "/achievement/:id",
+      templateUrl: "{{mountPoint}}/ng-templates/achievement.html"
+    })
+    .state('achievements', {
+      url: "/achievements",
+      templateUrl: "{{mountPoint}}/ng-templates/achievements.html"
+    })
+    .state('share', {
+      url: "/share/:aid/:uid",
+      templateUrl: "{{mountPoint}}/ng-templates/share.html"
     });
 
 
@@ -34,6 +46,16 @@ perficioApp.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
 perficioApp.run(function($rootScope) {
   $rootScope.mountPoint = '{{mountPoint}}';
+});
+
+perficioApp.controller('SocialShareController', function($scope, $rootScope) {
+  $rootScope.ogModel = {
+    ogTitle: 'u2i is gamified',
+    ogDesc: "Achievements are fun!",
+    ogSitename: "u2i is gamified",
+    ogUrl: 'http://u2i.is/gamified',
+    ogImage: 'none'
+  };
 });
 
 perficioApp.directive('honeycomb', ['$timeout', function ($timeout) {
@@ -68,12 +90,15 @@ perficioApp.directive('tooltip', function ($document) {
         var mousey = e.pageY + 10; //Get Y coordinates
         $('.toolTip')
         .css({ top: mousey, left: mousex })
+      }).click(function(e){
+        $(this).attr('title', $(this).data('tipText'));
+        $('.toolTip').remove();
       });
     }
   }
 })
 
-perficioApp.controller('PopupController', function ($scope) {
+perficioApp.controller('PopupController', function ($scope, $rootScope) {
     var unlockCount,
       usersCount,
       markUnlocks = function(unlockCount, usersCount) {
@@ -87,13 +112,14 @@ perficioApp.controller('PopupController', function ($scope) {
       achievement.percent = (unlockCount / usersCount).toFixed(2) * 100;
       achievement.unlockCount = unlockCount;
       achievement.usersCount = usersCount;
+      achievement.uid = (achievement.grantedBy) ? achievement.template : achievement._id;
       $scope.achievement = achievement;
       markUnlocks(unlockCount,usersCount);
     });
     $scope.$on('achievementGranted', function(event, achievement) {
       achievement.unlockCount = unlockCount+1;
       achievement.usersCount = usersCount;
-      achievement.percent = (unlockCount+1 / usersCount).toFixed(2) * 100;
+      achievement.percent = ((unlockCount+1) / usersCount).toFixed(2) * 100;
       $scope.achievement = achievement;
       markUnlocks(unlockCount+1,usersCount)
     });
@@ -113,6 +139,101 @@ perficioApp.controller('UserListController', function($scope, $http) {
   });
 });
 
+
+perficioApp.controller('AchievementsListController', function($scope, $http) {
+  $scope.achievements = [];
+  $http.get('{{mountPoint}}/templates').success(function(data) {
+    $scope.achievements = data.sort(function(a, b){ return a.name < b.name ? -1 : 1; });;
+    $scope.$broadcast('honeycomb','.users-list','.profile.users', '100px');
+  });
+});
+
+perficioApp.controller('AchievementController', function($scope, $http, $stateParams, $rootScope) {
+    var achievement; //template data
+    var unlockCount; //counts users with this achievement
+    var usersCount; //counts users
+    var templateId = $stateParams.id;
+  
+    function async_show(){
+      if(typeof unlockCount !== 'undefined' && typeof usersCount !== 'undefined' && typeof achievement !== 'undefined') {
+        achievement.usersCount = usersCount;
+        achievement.unlockCount = unlockCount;
+        achievement.percent = (unlockCount / usersCount).toFixed(2) * 100;
+        $scope.achievement = achievement;
+        drawCircle(360 / (usersCount / unlockCount), '2s');
+        $rootScope.ogModel.ogTitle = achievement.name;
+        $rootScope.ogModel.ogDesc = achievement.description;
+        $rootScope.ogModel.ogUrl = '{{mountPoint}}/achievement/' + templateId;
+        $rootScope.ogModel.ogImage = achievement.imageUrl;
+      }
+    }
+
+    $http.get('{{mountPoint}}/templates/' + templateId + '/achievements/count').success(
+      function(data) {
+        unlockCount = data.count;
+        async_show();
+      }
+    );
+
+    $http.get('{{mountPoint}}/users/count').success(
+      function(data) {
+        usersCount = data.count;
+        async_show();
+      }
+    );
+
+    $http.get('{{mountPoint}}/templates/' + templateId ).success(function(data) {
+      achievement = data;
+      async_show();
+    });
+});
+
+perficioApp.controller('ShareController', function($scope, $http, $stateParams, $rootScope) {
+    var achievement; //template data
+    var unlockCount; //counts users with this achievement
+    var usersCount; //counts users
+    var user; //user data
+    var templateId = $stateParams.aid;
+    var userId = $stateParams.uid;
+  
+    function async_show(){
+      if(typeof unlockCount !== 'undefined' && typeof user !== 'undefined' && typeof usersCount !== 'undefined' && typeof achievement !== 'undefined') {
+        achievement.usersCount = usersCount;
+        achievement.unlockCount = unlockCount;
+        achievement.uid = (achievement.grantedBy) ? achievement.template : achievement._id;
+        achievement.percent = (unlockCount / usersCount).toFixed(2) * 100;
+        $scope.achievement = achievement;
+        $scope.user = user;
+        drawCircle(360 / (usersCount / unlockCount), '2s');
+        $rootScope.ogModel.ogTitle = achievement.name;
+        $rootScope.ogModel.ogDesc = achievement.description;
+        $rootScope.ogModel.ogUrl = '{{mountPoint}}/achievement/' + templateId;
+        $rootScope.ogModel.ogImage = achievement.imageUrl;
+      }
+    }
+
+    $http.get('{{mountPoint}}/templates/' + templateId + '/achievements/count').success(function(data) {
+      unlockCount = data.count;
+      async_show();
+    });
+
+    $http.get('{{mountPoint}}/users/count').success(function(data) {
+      usersCount = data.count;
+      async_show();
+    });
+
+    $http.get('{{mountPoint}}/users/' + userId).success(function(data) {
+      user = data;
+      data.achieved.forEach(function(e){
+        if(e.template == templateId) {
+          achievement = e;
+        }
+      });
+      async_show();
+    });
+
+});
+
 perficioApp.controller('UserController', function($scope, $http, $stateParams) {
   $http.get('{{mountPoint}}/users/' + $stateParams.id).success(function(data) {
     $scope.user = data;
@@ -129,6 +250,7 @@ perficioApp.controller('UserController', function($scope, $http, $stateParams) {
     function async_show(){
       if(typeof unlockCount !== 'undefined' && typeof usersCount !== 'undefined' && typeof achievement !== 'undefined') {
         $scope.$broadcast('show-popup', achievement, unlockCount, usersCount);
+        $scope.$emit('updateSocial', achievement);
       }
     }
 
@@ -166,6 +288,7 @@ perficioApp.controller('UserController', function($scope, $http, $stateParams) {
 $(window).resize(function(){
   honeycomb('.achievements-list','.achievement-small', '31px');
   honeycomb('.users-list','.profile.users', '100px');
+  adjust_nav_functionality();
 });
 
 $(document).ready(function(){
@@ -178,26 +301,32 @@ $(document).ready(function(){
     e.preventDefault()
   });
 
-  $('.masterTooltip').on('hover', function(){
-    // Hover over code
-    var title = $(this).attr('title');
-    $(this).data('tipText', title).removeAttr('title');
-    $('<p class="tooltip"></p>')
-    .text(title)
-    .appendTo('body')
-    .fadeIn('slow');
-  }, function() {
-    // Hover out code
-    $(this).attr('title', $(this).data('tipText'));
-    $('.tooltip').remove();
-  }).on('mousemove', function(e) {
-    var mousex = e.pageX + 20; //Get X coordinates
-    var mousey = e.pageY + 10; //Get Y coordinates
-    $('.tooltip')
-    .css({ top: mousey, left: mousex })
+  $("#toggle-nav").click(function() {
+    $("nav").fadeToggle( 300 );
+    return false;
   });
+  adjust_nav_functionality();
+});
 
+$(window).load(function(){
+
+  
 })
+
+/**
+ *  Adjusts functionality of header navigation
+ */
+function adjust_nav_functionality() {
+  var innerWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+  window_width = Math.max( $( window ).width(), innerWidth );
+  if( window_width > 780 ){
+    $('nav').show();
+    $('#toggle-nav').hide();
+  }else if( window_width <= 780 ){
+    $('nav').hide();
+    $('#toggle-nav').show();
+  }
+}
 
 var drawCircle = function(){
   var transform_styles = ['-webkit-transform', '-ms-transform', 'transform'];
