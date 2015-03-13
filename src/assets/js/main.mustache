@@ -121,7 +121,7 @@ perficioApp.controller('PopupController', function ($scope, $rootScope) {
       achievement.usersCount = usersCount;
       achievement.percent = ((unlockCount+1) / usersCount).toFixed(2) * 100;
       $scope.achievement = achievement;
-      markUnlocks(unlockCount+1,usersCount)
+      markUnlocks(unlockCount+1,usersCount);
     });
 });
 
@@ -134,7 +134,7 @@ perficioApp.controller('UserListController', function($scope, $http) {
       users[i]['achievementsCount'] = users[i].achieved.length;
       users[i].achievements = users[i].achieved.slice(0, Math.min(5, users[i]['achievementsCount']));
     }
-    $scope.users = users;
+    $scope.users = users.sort(function(a, b){ return a.achieved.length > b.achieved.length ? -1 : 1; });
     $scope.$broadcast('honeycomb','.users-list','.profile.users', '100px');
   });
 });
@@ -143,7 +143,7 @@ perficioApp.controller('UserListController', function($scope, $http) {
 perficioApp.controller('AchievementsListController', function($scope, $http) {
   $scope.achievements = [];
   $http.get('{{mountPoint}}/templates').success(function(data) {
-    $scope.achievements = data.sort(function(a, b){ return a.name < b.name ? -1 : 1; });;
+    $scope.achievements = data.sort(function(a, b){ return a.name < b.name ? -1 : 1; });
     $scope.$broadcast('honeycomb','.users-list','.profile.users', '100px');
   });
 });
