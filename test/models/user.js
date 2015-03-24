@@ -124,16 +124,53 @@ describe("user model", function() {
       });
     });
 
-    it("returns the user if it already exists", function(done) {
-      User.verify(null, null, {
-        emails: [{
-          value: users[0].email
-        }]
-      }, function(err, user, messageObj) {
-        expect(err).to.be.null;
-        expect(user.id).to.equal(users[0].id);
-        expect(messageObj).to.be.undefined;
-        done();
+    describe('for existing user', function() {
+      it("returns the user", function(done) {
+        User.verify(null, null, {
+          emails: [{
+            value: users[0].email
+          }]
+        }, function(err, user, messageObj) {
+          expect(err).to.be.null;
+          expect(user.id).to.equal(users[0].id);
+          expect(messageObj).to.be.undefined;
+          done();
+        });
+      });
+
+      it("doesn't update the photo url if it's already non-google", function(done) {
+        User.verify(null, null, {
+          emails: [{
+            value: users[0].email
+          }],
+          _json: {
+            picture: 'https://lh3.googleusercontent.com/asads/BBBBB/AAAAAAAAAAA/4252rscbv5M/photo.jpg'
+          }
+        }, function(err, user, messageObj) {
+          expect(err).to.be.null;
+          expect(user.id).to.equal(users[0].id);
+          expect(user.photoUrl).to.equal(users[0].photoUrl);
+          done();
+        });
+      });
+
+      it("updates the photo url if it's a google profile photo", function(done) {
+        users[0].photoUrl = 'https://lh3.googleusercontent.com/asads/BBBBB/AAAAAAAAAAA/4252rscbv5M/photo.jpg';
+        users[0].save(function() {
+          User.verify(null, null, {
+            emails: [{
+              value: users[0].email
+            }],
+            _json: {
+              picture: 'https://lh3.googleusercontent.com/asads/BBBBB/AAAAAAAAAAA/4252rscbv5M/newPhoto.jpg'
+            }
+          }, function(err, user, messageObj) {
+            expect(err).to.be.null;
+            expect(user.id).to.equal(users[0].id);
+            expect(user.photoUrl).to.equal('https://lh3.googleusercontent.com/asads/BBBBB/AAAAAAAAAAA/4252rscbv5M/newPhoto.jpg');
+            done();
+          });
+        });
       });
     });
 
