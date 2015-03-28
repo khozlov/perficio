@@ -21,7 +21,8 @@ describe("user model", function() {
         }, function(err, createdTemplate1) {
           template1 = createdTemplate1;
           helper.factories.create('Template', {
-            author: createdUsers[1]
+            author: createdUsers[1],
+            private: true
           }, function(err, createdTemplate2) {
             template2 = createdTemplate2
             helper.factories.create('Achievement', {
@@ -33,7 +34,8 @@ describe("user model", function() {
               helper.factories.create('Achievement', {
                 owner: createdUsers[1],
                 grantedBy: [createdUsers[0]],
-                template: createdTemplate2
+                template: createdTemplate2,
+                private: true
               }, function(err, createdAchievement2) {
                 achievement2 = createdAchievement2;
                 helper.factories.create('Achievement', {
@@ -67,8 +69,30 @@ describe("user model", function() {
   });
 
   describe('#getAchievementsAndTemplates', function() {
-    it('gets achieved and unachieved achievements', function(done) {
-      users[0].getAchievementsAndTemplates(function(err, result) {
+    it('gets only non-private achieved and unachieved achievements if includePrivate is false', function(done) {
+      users[0].getAchievementsAndTemplates(false, function(err, result) {
+        expect(err).to.be.null;
+        expect(result.achieved.length).to.equal(1);
+        expect(result.achieved[0].id).to.equal(achievement1.id);
+        expect(result.achieved[0].owner).to.be.undefined;
+        expect(result.achieved[0].template.toString()).to.equal(template1.id);
+        expect(result.achieved[0].grantedBy[0].name).to.equal(users[1].name);
+        expect(result.achieved[0].grantedBy[0].photoUrl).to.equal(users[1].photoUrl);
+        users[1].getAchievementsAndTemplates(false, function(err, result) {
+          expect(err).to.be.null;
+          expect(result.achieved.length).to.equal(1);
+          expect(result.achieved[0].id).to.equal(achievement3.id);
+          expect(result.achieved[0].owner).to.be.undefined;
+          expect(result.achieved[0].template.toString()).to.equal(template1.id);
+          expect(result.achieved[0].grantedBy[0].name).to.equal(users[0].name);
+          expect(result.achieved[0].grantedBy[0].photoUrl).to.equal(users[0].photoUrl);
+          done();
+        });
+      });
+    });
+
+    it('gets all achieved and unachieved achievements if includePrivate is true', function(done) {
+      users[0].getAchievementsAndTemplates(true, function(err, result) {
         expect(err).to.be.null;
         expect(result.achieved.length).to.equal(1);
         expect(result.achieved[0].id).to.equal(achievement1.id);
@@ -86,21 +110,39 @@ describe("user model", function() {
   });
 
   describe('#getAchievements', function() {
-    it('gets achieved achievements', function(done) {
-      users[0].getAchievements('name', function(err, result) {
+    it('gets all achieved achievements if includePrivate is true', function(done) {
+      users[1].getAchievements('name', true, function(err, result) {
+        expect(err).to.be.null;
+        expect(result.length).to.equal(2);
+        expect(result[0].id).to.equal(achievement2.id);
+        expect(result[0].owner).to.be.undefined;
+        expect(result[0].template.toString()).to.equal(template2.id);
+        expect(result[0].grantedBy[0].name).to.equal(users[0].name);
+        expect(result[0].grantedBy[0].photoUrl).to.equal(users[0].photoUrl);
+        expect(result[1].id).to.equal(achievement3.id);
+        expect(result[1].owner).to.be.undefined;
+        expect(result[1].template.toString()).to.equal(template1.id);
+        expect(result[1].grantedBy[0].name).to.equal(users[0].name);
+        expect(result[1].grantedBy[0].photoUrl).to.equal(users[0].photoUrl);
+        done();
+      });
+    });
+
+    it('gets all non-private achieved achievements if includePrivate is false', function(done) {
+      users[1].getAchievements('name', false, function(err, result) {
         expect(err).to.be.null;
         expect(result.length).to.equal(1);
-        expect(result[0].id).to.equal(achievement1.id);
+        expect(result[0].id).to.equal(achievement3.id);
         expect(result[0].owner).to.be.undefined;
         expect(result[0].template.toString()).to.equal(template1.id);
-        expect(result[0].grantedBy[0].name).to.equal(users[1].name);
-        expect(result[0].grantedBy[0].photoUrl).to.equal(users[1].photoUrl);
+        expect(result[0].grantedBy[0].name).to.equal(users[0].name);
+        expect(result[0].grantedBy[0].photoUrl).to.equal(users[0].photoUrl);
         done();
       });
     });
 
     it('uses the order provided', function(done) {
-      users[1].getAchievements('-name', function(err, result) {
+      users[1].getAchievements('-name', true, function(err, result) {
         expect(err).to.be.null;
         expect(result.length).to.equal(2);
         expect(result[0].id).to.equal(achievement3.id);
