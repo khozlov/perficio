@@ -78,6 +78,8 @@ describe("user model", function() {
         expect(result.achieved[0].template.toString()).to.equal(template1.id);
         expect(result.achieved[0].grantedBy[0].name).to.equal(users[1].name);
         expect(result.achieved[0].grantedBy[0].photoUrl).to.equal(users[1].photoUrl);
+        expect(result.achieved[0].tags[0]).to.equal(achievement1.tags[0]);
+        expect(result.achieved[0].tags[1]).to.equal(achievement1.tags[1]);
         users[1].getAchievementsAndTemplates(false, function(err, result) {
           expect(err).to.be.null;
           expect(result.achieved.length).to.equal(1);
@@ -86,6 +88,8 @@ describe("user model", function() {
           expect(result.achieved[0].template.toString()).to.equal(template1.id);
           expect(result.achieved[0].grantedBy[0].name).to.equal(users[0].name);
           expect(result.achieved[0].grantedBy[0].photoUrl).to.equal(users[0].photoUrl);
+          expect(result.achieved[0].tags[0]).to.equal(achievement3.tags[0]);
+          expect(result.achieved[0].tags[1]).to.equal(achievement3.tags[1]);
           done();
         });
       });
@@ -100,10 +104,14 @@ describe("user model", function() {
         expect(result.achieved[0].template.toString()).to.equal(template1.id);
         expect(result.achieved[0].grantedBy[0].name).to.equal(users[1].name);
         expect(result.achieved[0].grantedBy[0].photoUrl).to.equal(users[1].photoUrl);
+        expect(result.achieved[0].tags[0]).to.equal(achievement1.tags[0]);
+        expect(result.achieved[0].tags[1]).to.equal(achievement1.tags[1]);
         expect(result.unachieved[0].id).to.equal(template2.id);
         expect(result.unachieved[0].owner).to.be.undefined;
         expect(result.unachieved[0].template).to.be.undefined;
         expect(result.unachieved[0].grantedBy).to.be.undefined;
+        expect(result.unachieved[0].tags[0]).to.equal(template2.tags[0]);
+        expect(result.unachieved[0].tags[1]).to.equal(template2.tags[1]);
         done();
       });
     });
@@ -119,11 +127,15 @@ describe("user model", function() {
         expect(result[0].template.toString()).to.equal(template2.id);
         expect(result[0].grantedBy[0].name).to.equal(users[0].name);
         expect(result[0].grantedBy[0].photoUrl).to.equal(users[0].photoUrl);
+        expect(result[0].tags[0]).to.equal(achievement2.tags[0]);
+        expect(result[0].tags[1]).to.equal(achievement2.tags[1]);
         expect(result[1].id).to.equal(achievement3.id);
         expect(result[1].owner).to.be.undefined;
         expect(result[1].template.toString()).to.equal(template1.id);
         expect(result[1].grantedBy[0].name).to.equal(users[0].name);
         expect(result[1].grantedBy[0].photoUrl).to.equal(users[0].photoUrl);
+        expect(result[1].tags[0]).to.equal(achievement3.tags[0]);
+        expect(result[1].tags[1]).to.equal(achievement3.tags[1]);
         done();
       });
     });
@@ -137,6 +149,8 @@ describe("user model", function() {
         expect(result[0].template.toString()).to.equal(template1.id);
         expect(result[0].grantedBy[0].name).to.equal(users[0].name);
         expect(result[0].grantedBy[0].photoUrl).to.equal(users[0].photoUrl);
+        expect(result[0].tags[0]).to.equal(achievement3.tags[0]);
+        expect(result[0].tags[1]).to.equal(achievement3.tags[1]);
         done();
       });
     });

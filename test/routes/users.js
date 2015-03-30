@@ -330,6 +330,12 @@ describe('user routes', function() {
               expect(err).to.be.null;
               expect(achievements.length).to.equal(1);
               expect(achievements[0].grantedBy.toString()).to.equal([users[0].id].toString());
+              expect(achievements[0].name).to.equal(template2.name);
+              expect(achievements[0].description).to.equal(template2.description);
+              expect(achievements[0].imageUrl).to.equal(template2.imageUrl);
+              expect(achievements[0].private).to.equal(template2.private);
+              expect(achievements[0].tags[0]).to.equal(template2.tags[0]);
+              expect(achievements[0].tags[1]).to.equal(template2.tags[1]);
               done();
             });
           });
@@ -359,6 +365,8 @@ describe('user routes', function() {
             expect(res.body.imageUrl).to.equal(achievement.imageUrl);
             expect(res.body.grantedBy.length).to.equal(1);
             expect(res.body.grantedBy[0]).to.equal(achievement.grantedBy[0].toString());
+            expect(res.body.tags[0]).to.equal(achievement.tags[0]);
+            expect(res.body.tags[1]).to.equal(achievement.tags[1]);
             done();
           });
         });

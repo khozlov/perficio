@@ -58,11 +58,17 @@ describe('templates routes', function() {
           expect(resTemplate1.imageUrl).to.equal(template.imageUrl);
           expect(resTemplate1.description).to.equal(template.description);
           expect(resTemplate1.author).to.equal(template.author.id);
+          expect(resTemplate1.private).to.equal(template.private);
+          expect(resTemplate1.tags[0]).to.equal(template.tags[0]);
+          expect(resTemplate1.tags[1]).to.equal(template.tags[1]);
 
           expect(resTemplate2.name).to.equal(privateTemplate.name);
           expect(resTemplate2.imageUrl).to.equal(privateTemplate.imageUrl);
           expect(resTemplate2.description).to.equal(privateTemplate.description);
           expect(resTemplate2.author).to.equal(privateTemplate.author.id);
+          expect(resTemplate2.private).to.equal(privateTemplate.private);
+          expect(resTemplate2.tags[0]).to.equal(privateTemplate.tags[0]);
+          expect(resTemplate2.tags[1]).to.equal(privateTemplate.tags[1]);
           done();
         });
     });
@@ -78,6 +84,9 @@ describe('templates routes', function() {
           expect(resTemplate.imageUrl).to.equal(template.imageUrl);
           expect(resTemplate.description).to.equal(template.description);
           expect(resTemplate.author).to.equal(template.author.id);
+          expect(resTemplate.private).to.equal(template.private);
+          expect(resTemplate.tags[0]).to.equal(template.tags[0]);
+          expect(resTemplate.tags[1]).to.equal(template.tags[1]);
           done();
         });
     });
@@ -119,6 +128,9 @@ describe('templates routes', function() {
           expect(res.body.imageUrl).to.equal(template.imageUrl);
           expect(res.body.description).to.equal(template.description);
           expect(res.body.author).to.equal(template.author.id);
+          expect(res.body.private).to.equal(template.private);
+          expect(res.body.tags[0]).to.equal(template.tags[0]);
+          expect(res.body.tags[1]).to.equal(template.tags[1]);
           done();
         });
     });
@@ -136,6 +148,9 @@ describe('templates routes', function() {
           expect(res.body.imageUrl).to.equal(privateTemplate.imageUrl);
           expect(res.body.description).to.equal(privateTemplate.description);
           expect(res.body.author).to.equal(privateTemplate.author.id);
+          expect(res.body.private).to.equal(privateTemplate.private);
+          expect(res.body.tags[0]).to.equal(privateTemplate.tags[0]);
+          expect(res.body.tags[1]).to.equal(privateTemplate.tags[1]);
           done();
         });
     });
@@ -228,7 +243,9 @@ describe('templates routes', function() {
           .send({
             name: 'Bronze medal',
             description: 'For being not quite the best',
-            imageUrl: 'bronzeUrl'
+            imageUrl: 'bronzeUrl',
+            private: true,
+            tags: ['testTag']
           })
           .end(function(err, res) {
             expect(err).to.be.null;
@@ -240,6 +257,8 @@ describe('templates routes', function() {
               expect(templates[0].description).to.equal('For being not quite the best');
               expect(templates[0].imageUrl).to.equal('bronzeUrl');
               expect(templates[0].author.toString()).to.equal(admin.id.toString());
+              expect(templates[0].private).to.equal(true);
+              expect(templates[0].tags[0]).to.equal('testTag');
               done();
             });
           });
@@ -261,7 +280,9 @@ describe('templates routes', function() {
           .send({
             name: 'Silver medal',
             description: 'For being not quite the best',
-            imageUrl: 'silverUrl'
+            imageUrl: 'silverUrl',
+            private: true,
+            tags: ['testTag']
           })
           .end(function(err, res) {
             expect(err).to.be.null;
@@ -273,6 +294,8 @@ describe('templates routes', function() {
               expect(res.body.description).to.equal(templates[0].description);
               expect(res.body.imageUrl).to.equal(templates[0].imageUrl);
               expect(res.body.author).to.equal(templates[0].author.toString());
+              expect(res.body.private).to.equal(templates[0].private);
+              expect(res.body.tags[0]).to.equal(templates[0].tags[0]);
               done();
             });
           });
@@ -317,7 +340,7 @@ describe('templates routes', function() {
         });
     });
 
-    it("counts all achievement for a given template", function(done) {
+    it("counts all achievements for a given template", function(done) {
       chai.request(app)
         .get('/templates/' + template.id + '/achievements/count')
         .end(function(err, res) {
@@ -326,7 +349,7 @@ describe('templates routes', function() {
         });
     });
 
-    it("counts all achievement for a given private template if the user is logged in", function(done) {
+    it("counts all achievements for a given private template if the user is logged in", function(done) {
       chai.request(app)
         .get('/templates/' + privateTemplate.id + '/achievements/count')
         .set('Cookie', helper.sessionCookies({

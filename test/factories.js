@@ -15,7 +15,8 @@ monky.factory('Template', {
   name: 'Medal #n',
   description: 'Super achievement number #n',
   imageUrl: 'www.image.com/image#n.jpg',
-  author: monky.ref('User')
+  author: monky.ref('User'),
+  tags:['maintag#n','tag#n']
 });
 monky.factory('Achievement', {
   name: 'Medal #n',
@@ -23,7 +24,8 @@ monky.factory('Achievement', {
   imageUrl: 'www.image.com/image#n.jpg',
   owner: monky.ref('User'),
   grantedBy: [monky.ref('User')],
-  template: monky.ref('Template')
+  template: monky.ref('Template'),
+  tags:['mainTemplateTag#n','templateTag#n']
 });
 
 module.exports = monky;
