@@ -14,13 +14,18 @@ describe('templates routes', function() {
 
   describe("#index", function() {
 
-    var templates;
+    var template, privateTemplate;
 
     before(function(done) {
       helper.clearDb(function() {
-        helper.factories.createList('Template', 2, function(err, createdTemplates) {
-          templates = createdTemplates;
-          done();
+        helper.factories.create('Template', function(err, createdTemplate) {
+          helper.factories.create('Template', {
+            private: true
+          }, function(err, createdPrivateTemplate) {
+            template = createdTemplate;
+            privateTemplate = createdPrivateTemplate;
+            done();
+          });
         });
       });
     });
@@ -35,24 +40,44 @@ describe('templates routes', function() {
         });
     });
 
-    it("returns all templates", function(done) {
+    it("returns all templates if the user is logged in", function(done) {
+      chai.request(app)
+        .get('/templates')
+        .set('Cookie', helper.sessionCookies({
+          'passport': {
+            'user': template.author.id
+          }
+        }))
+        .end(function(err, res) {
+          var templateIdMap = helper.idMap(res.body),
+            resTemplate1 = res.body[templateIdMap[template.id]],
+            resTemplate2 = res.body[templateIdMap[privateTemplate.id]];
+          expect(res.body.length).to.equal(2);
+
+          expect(resTemplate1.name).to.equal(template.name);
+          expect(resTemplate1.imageUrl).to.equal(template.imageUrl);
+          expect(resTemplate1.description).to.equal(template.description);
+          expect(resTemplate1.author).to.equal(template.author.id);
+
+          expect(resTemplate2.name).to.equal(privateTemplate.name);
+          expect(resTemplate2.imageUrl).to.equal(privateTemplate.imageUrl);
+          expect(resTemplate2.description).to.equal(privateTemplate.description);
+          expect(resTemplate2.author).to.equal(privateTemplate.author.id);
+          done();
+        });
+    });
+
+    it("returns only public templates if the user is not logged in", function(done) {
       chai.request(app)
         .get('/templates')
         .end(function(err, res) {
-          var templateIdMap = helper.idMap(res.body),
-            resTemplate1 = res.body[templateIdMap[templates[0].id]],
-            resTemplate2 = res.body[templateIdMap[templates[1].id]];
-          expect(res.body.length).to.equal(2);
+          var resTemplate = res.body[0];
+          expect(res.body.length).to.equal(1);
 
-          expect(resTemplate1.name).to.equal(templates[0].name);
-          expect(resTemplate1.imageUrl).to.equal(templates[0].imageUrl);
-          expect(resTemplate1.description).to.equal(templates[0].description);
-          expect(resTemplate1.author).to.equal(templates[0].author.id);
-
-          expect(resTemplate2.name).to.equal(templates[1].name);
-          expect(resTemplate2.imageUrl).to.equal(templates[1].imageUrl);
-          expect(resTemplate2.description).to.equal(templates[1].description);
-          expect(resTemplate2.author).to.equal(templates[1].author.id);
+          expect(resTemplate.name).to.equal(template.name);
+          expect(resTemplate.imageUrl).to.equal(template.imageUrl);
+          expect(resTemplate.description).to.equal(template.description);
+          expect(resTemplate.author).to.equal(template.author.id);
           done();
         });
     });
@@ -60,13 +85,18 @@ describe('templates routes', function() {
 
   describe("#show", function() {
 
-    var template;
+    var template, privateTemplate;
 
     before(function(done) {
       helper.clearDb(function() {
         helper.factories.create('Template', function(err, createdTemplate) {
           template = createdTemplate;
-          done();
+          helper.factories.create('Template', {
+            private: true
+          }, function(err, createdPrivateTemplate) {
+            privateTemplate = createdPrivateTemplate;
+            done();
+          });
         });
       });
     });
@@ -81,7 +111,7 @@ describe('templates routes', function() {
         });
     });
 
-    it("returns the template", function(done) {
+    it("returns the template if it's public", function(done) {
       chai.request(app)
         .get('/templates/' + template.id)
         .end(function(err, res) {
@@ -93,9 +123,36 @@ describe('templates routes', function() {
         });
     });
 
+    it("returns the template if it's private and the user is logged in", function(done) {
+      chai.request(app)
+        .get('/templates/' + privateTemplate.id)
+        .set('Cookie', helper.sessionCookies({
+          'passport': {
+            'user': template.author.id
+          }
+        }))
+        .end(function(err, res) {
+          expect(res.body.name).to.equal(privateTemplate.name);
+          expect(res.body.imageUrl).to.equal(privateTemplate.imageUrl);
+          expect(res.body.description).to.equal(privateTemplate.description);
+          expect(res.body.author).to.equal(privateTemplate.author.id);
+          done();
+        });
+    });
+
     it("returns 404 if the template is not found", function(done) {
       chai.request(app)
         .get('/templates/trelemorele')
+        .end(function(err, res) {
+          expect(err).to.be.null;
+          expect(res).to.have.status(404);
+          done();
+        });
+    });
+
+    it("returns 404 if the template is private and the user is not logged in", function(done) {
+      chai.request(app)
+        .get('/templates/' + privateTemplate.id)
         .end(function(err, res) {
           expect(err).to.be.null;
           expect(res).to.have.status(404);
@@ -224,21 +281,26 @@ describe('templates routes', function() {
   });
 
   describe('#achievementCount', function() {
-    var template;
+    var template, privateTemplate;
 
     before(function(done) {
       helper.clearDb(function() {
         helper.factories.createList('User', 2, function(err, createdUsers) {
-          helper.factories.createList('Template', 2, function(err, createdTemplates) {
-            template = createdTemplates[0];
-            helper.factories.create('Achievement', {
-              template: createdTemplates[0],
-              owner: createdUsers[0]
-            }, function() {
-              helper.factories.create('Achievement', {
-                template: createdTemplates[0],
-                owner: createdUsers[1]
-              }, done);
+          helper.factories.create('Template', function(err, createdTemplate) {
+            template = createdTemplate;
+            helper.factories.create('Template', {
+              private: true
+            }, function(err, createdPrivateTemplate) {
+              privateTemplate = createdPrivateTemplate;
+              helper.factories.createList('Achievement', 2, {
+                template: createdTemplate,
+                owner: createdUsers[0]
+              }, function() {
+                helper.factories.create('Achievement', {
+                  template: createdPrivateTemplate,
+                  owner: createdUsers[1]
+                }, done);
+              });
             });
           });
         });
@@ -263,12 +325,53 @@ describe('templates routes', function() {
           done();
         });
     });
+
+    it("counts all achievement for a given private template if the user is logged in", function(done) {
+      chai.request(app)
+        .get('/templates/' + privateTemplate.id + '/achievements/count')
+        .set('Cookie', helper.sessionCookies({
+          'passport': {
+            'user': template.author.id
+          }
+        }))
+        .end(function(err, res) {
+          expect(res.body.count).to.equal(1);
+          done();
+        });
+    });
+
+    it("responds with 404 for a given private template if the user is not logged in", function(done) {
+      chai.request(app)
+        .get('/templates/' + privateTemplate.id + '/achievements/count')
+        .end(function(err, res) {
+          expect(err).to.be.null;
+          expect(res).to.have.status(404);
+          done();
+        });
+    });
+
+    it("responds with 404 if the template cannot be found", function(done) {
+      chai.request(app)
+        .get('/templates/tralalalala/achievements/count')
+        .end(function(err, res) {
+          expect(err).to.be.null;
+          expect(res).to.have.status(404);
+          done();
+        });
+    });
   });
 
   describe("#count", function() {
+    var user;
+
     before(function(done) {
       helper.clearDb(function() {
-        helper.factories.createList('Template', 3, done);
+        helper.factories.createList('Template', 2, function(err, createdTemplates) {
+          user = createdTemplates[0].author;
+          helper.factories.create('Template', {
+            private: true
+          }, done)
+        });
       });
     });
 
@@ -282,11 +385,25 @@ describe('templates routes', function() {
         });
     });
 
-    it("returns a total number of all templates", function(done) {
+    it("returns a total number of all templates if the user is logged in", function(done) {
+      chai.request(app)
+        .get('/templates/count')
+        .set('Cookie', helper.sessionCookies({
+          'passport': {
+            'user': user.id
+          }
+        }))
+        .end(function(err, res) {
+          expect(res.body.count).to.equal(3);
+          done();
+        });
+    });
+
+    it("returns a total number of public templates if the user is not logged in", function(done) {
       chai.request(app)
         .get('/templates/count')
         .end(function(err, res) {
-          expect(res.body.count).to.equal(3);
+          expect(res.body.count).to.equal(2);
           done();
         });
     });

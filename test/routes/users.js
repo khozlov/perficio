@@ -22,7 +22,8 @@ describe('user routes', function() {
             author: createdUsers[0]
           }, function(err, createdTemplate1) {
             helper.factories.create('Template', {
-              author: createdUsers[1]
+              author: createdUsers[1],
+              private: true
             }, function(err, createdTemplate2) {
               helper.factories.create('Achievement', {
                 owner: createdUsers[0],
@@ -32,7 +33,8 @@ describe('user routes', function() {
                 helper.factories.create('Achievement', {
                   owner: createdUsers[0],
                   grantedBy: [createdUsers[0]],
-                  template: createdTemplate2
+                  template: createdTemplate2,
+                  private: true
                 }, function() {
                   helper.factories.create('Achievement', {
                     owner: createdUsers[1],
@@ -65,15 +67,43 @@ describe('user routes', function() {
             resUser1 = res.body[userIdMap[users[0].id]],
             resUser2 = res.body[userIdMap[users[1].id]];
           expect(res.body.length).to.equal(2);
-          var userIdMap = helper.idMap(res.body);
           expect(resUser1.name).to.equal(users[0].name);
           expect(resUser1.photoUrl).to.equal(users[0].photoUrl);
           expect(resUser1.email).to.be.undefined;
-          expect(resUser1.achieved.length).to.equal(2);
 
           expect(resUser2.name).to.equal(users[1].name);
           expect(resUser2.photoUrl).to.equal(users[1].photoUrl);
           expect(resUser2.email).to.be.undefined;
+          done();
+        });
+    });
+
+    it("includes private and public achievements if the user is logged in", function(done) {
+      chai.request(app)
+        .get('/users')
+        .set('Cookie', helper.sessionCookies({
+          'passport': {
+            'user': users[0].id
+          }
+        }))
+        .end(function(err, res) {
+          var userIdMap = helper.idMap(res.body),
+            resUser1 = res.body[userIdMap[users[0].id]],
+            resUser2 = res.body[userIdMap[users[1].id]];
+          expect(resUser1.achieved.length).to.equal(2);
+          expect(resUser2.achieved.length).to.equal(1);
+          done();
+        });
+    });
+
+    it("includes only public achievements if the user is not logged in", function(done) {
+      chai.request(app)
+        .get('/users')
+        .end(function(err, res) {
+          var userIdMap = helper.idMap(res.body),
+            resUser1 = res.body[userIdMap[users[0].id]],
+            resUser2 = res.body[userIdMap[users[1].id]];
+          expect(resUser1.achieved.length).to.equal(1);
           expect(resUser2.achieved.length).to.equal(1);
           done();
         });
@@ -81,23 +111,34 @@ describe('user routes', function() {
   });
 
   describe("#show", function() {
-    var user, template, achievement;
+    var user, template, privateTemplates, achievement, privateAchievement;
 
     before(function(done) {
       helper.clearDb(function() {
         helper.factories.create('User', function(err, createdUser) {
           user = createdUser;
-          helper.factories.createList('Template', 2, {
-            author: createdUser
-          }, function(err, createdTemplates) {
-            template = createdTemplates[1];
-            helper.factories.create('Achievement', {
-              owner: createdUser,
-              grantedBy: [createdUser],
-              template: createdTemplates[0]
-            }, function(err, createdAchievement) {
-              achievement = createdAchievement;
-              done()
+          helper.factories.create('Template', function(err, createdTemplate) {
+            template = createdTemplate;
+            helper.factories.createList('Template', 2, {
+              private: true
+            }, function(err, createdTemplates) {
+              privateTemplates = createdTemplates;
+              helper.factories.create('Achievement', {
+                owner: createdUser,
+                grantedBy: [createdUser],
+                template: createdTemplate
+              }, function(err, createdAchievement) {
+                achievement = createdAchievement;
+                helper.factories.create('Achievement', {
+                  owner: createdUser,
+                  grantedBy: [createdUser],
+                  template: createdTemplates[0],
+                  private: true
+                }, function(err, createdAchievement) {
+                  privateAchievement = createdAchievement;
+                  done();
+                });
+              });
             });
           });
         });
@@ -121,10 +162,35 @@ describe('user routes', function() {
           expect(res.body.name).to.equal(user.name);
           expect(res.body.photoUrl).to.equal(user.photoUrl);
           expect(res.body.email).to.be.undefined;
+          done();
+        });
+    });
+
+    it("includes private and public achievments if the user is logged in", function(done) {
+      chai.request(app)
+        .get('/users/' + user.id)
+        .set('Cookie', helper.sessionCookies({
+          'passport': {
+            'user': user.id
+          }
+        }))
+        .end(function(err, res) {
+          expect(res.body.achieved.length).to.equal(2);
+          expect(res.body.achieved[0]._id).to.equal(achievement.id);
+          expect(res.body.achieved[1]._id).to.equal(privateAchievement.id);
+          expect(res.body.unachieved.length).to.equal(1);
+          expect(res.body.unachieved[0]._id).to.equal(privateTemplates[1].id);
+          done();
+        });
+    });
+
+    it("includes only public achievments if the user is not logged in", function(done) {
+      chai.request(app)
+        .get('/users/' + user.id)
+        .end(function(err, res) {
           expect(res.body.achieved.length).to.equal(1);
           expect(res.body.achieved[0]._id).to.equal(achievement.id);
-          expect(res.body.unachieved.length).to.equal(1);
-          expect(res.body.unachieved[0]._id).to.equal(template.id);
+          expect(res.body.unachieved.length).to.equal(0);
           done();
         });
     });
