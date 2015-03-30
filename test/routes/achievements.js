@@ -12,7 +12,7 @@ describe('achievement routes', function() {
   describe("#social", function() {
     var achievement;
 
-    before(function(done) {
+    beforeEach(function(done) {
       helper.clearDb(function() {
         helper.factories.create('Template', function(err, createdTemplate) {
           helper.factories.create('Achievement', {
@@ -44,5 +44,19 @@ describe('achievement routes', function() {
           done();
         });
     });
+
+    it("returns 404 if the achievement is private", function(done) {
+      achievement.update({
+        private: true
+      }, function() {
+        chai.request(app)
+          .get('/achievements/' + achievement.id + '/social')
+          .end(function(err, res) {
+            expect(err).to.be.null;
+            expect(res).to.have.status(404);
+            done();
+          });
+      });
+    })
   })
 })
