@@ -1,0 +1,11 @@
+source 'https://rubygems.org'
+
+group :test do
+  gem 'cucumber'
+  # gem 'rspec-expectations'
+  # gem 'poltergeist'
+  gem 'selenium-webdriver'
+  gem 'capybara-webkit'
+  # gem 'launchy'
+  # gem 'rest-client'
+end
