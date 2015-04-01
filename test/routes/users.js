@@ -206,6 +206,101 @@ describe('user routes', function() {
     });
   })
 
+  describe("#current", function() {
+    var user, template, privateTemplates, achievement, privateAchievement;
+
+    before(function(done) {
+      helper.clearDb(function() {
+        helper.factories.create('User', function(err, createdUser) {
+          user = createdUser;
+          helper.factories.create('Template', function(err, createdTemplate) {
+            template = createdTemplate;
+            helper.factories.createList('Template', 2, {
+              private: true
+            }, function(err, createdTemplates) {
+              privateTemplates = createdTemplates;
+              helper.factories.create('Achievement', {
+                owner: createdUser,
+                grantedBy: [createdUser],
+                template: createdTemplate
+              }, function(err, createdAchievement) {
+                achievement = createdAchievement;
+                helper.factories.create('Achievement', {
+                  owner: createdUser,
+                  grantedBy: [createdUser],
+                  template: createdTemplates[0],
+                  private: true
+                }, function(err, createdAchievement) {
+                  privateAchievement = createdAchievement;
+                  done();
+                });
+              });
+            });
+          });
+        });
+      });
+    });
+
+    it("is a success", function(done) {
+      chai.request(app)
+        .get('/users/current')
+        .set('Cookie', helper.sessionCookies({
+          'passport': {
+            'user': user.id
+          }
+        }))
+        .end(function(err, res) {
+          expect(err).to.be.null;
+          expect(res).to.have.status(200);
+          done();
+        });
+    });
+
+    it("returns the user", function(done) {
+      chai.request(app)
+        .get('/users/current')
+        .set('Cookie', helper.sessionCookies({
+          'passport': {
+            'user': user.id
+          }
+        }))
+        .end(function(err, res) {
+          expect(res.body.name).to.equal(user.name);
+          expect(res.body.photoUrl).to.equal(user.photoUrl);
+          expect(res.body.email).to.be.undefined;
+          done();
+        });
+    });
+
+    it("includes private and public achievements", function(done) {
+      chai.request(app)
+        .get('/users/current')
+        .set('Cookie', helper.sessionCookies({
+          'passport': {
+            'user': user.id
+          }
+        }))
+        .end(function(err, res) {
+          expect(res.body.achieved.length).to.equal(2);
+          expect(res.body.achieved[0]._id).to.equal(achievement.id);
+          expect(res.body.achieved[1]._id).to.equal(privateAchievement.id);
+          expect(res.body.unachieved.length).to.equal(1);
+          expect(res.body.unachieved[0]._id).to.equal(privateTemplates[1].id);
+          done();
+        });
+    });
+
+    it("returns 404 if the user is not logged in", function(done) {
+      chai.request(app)
+        .get('/users/trelemorele')
+        .end(function(err, res) {
+          expect(err).to.be.null;
+          expect(res).to.have.status(404);
+          done();
+        });
+    });
+  })
+
   describe("#grant", function() {
     var users, template1, template2;
 
