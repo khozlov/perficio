@@ -15,13 +15,13 @@ div(ng-controller='UserController as userCtrl')
             img.achievement-bg(ng-src='assets/images/hex_achievement@2x.png', height="180")
             img.achievement-icon(ng-src="{{achievement.imageUrl}}", height="80")
             .achievements-count(tooltip, title="{{achievement.unlockCount}} of {{achievement.usersCount}} users have this achievement") {{achievement.percent}}%
-          //- .social(ng-if="achievement.grantedBy")
-          //-   | Share: 
-          //-   a.fa.fa-facebook-square(href="http://facebook.com/sharer.php?u={{mountPoint}}/share/{{achievement.template}}/{{user._id}}", target="_blank")
-          //-   a.fa.fa-twitter-square(href="http://twitter.com/intent/tweet?text=I just get this Achivement&{{mountPoint}}/share/{{achievement.template}}/{{user._id}}", target="_blank")
-          //-   a.fa.fa-linkedin-square(href="http://www.linkedin.com/shareArticle?mini=true&url={{mountPoint}}/share/{{achievement.template}}/{{user._id}}&title=I just get this Achivement", target="_blank")
-          //-   a.fa.fa-google-plus-square(href="https://plus.google.com/share?url={{mountPoint}}/share/{{achievement.template}}/{{user._id}}", target="_blank")
-          //-   a.fa.fa-external-link-square(href="{{mountPoint}}/#/share/{{achievement.template}}/{{user._id}}")
+          .social(ng-if="achievement.grantedBy && !achievement.private")
+            | Share: 
+            a.fa.fa-facebook-square(href="http://facebook.com/sharer.php?u={{mountPoint}}/achievements/{{achievement._id}}/social?redirectUrl={{mountPoint}}/#/share/{{achievement.template}}/{{user._id}}", target="_blank")
+            a.fa.fa-twitter-square(href="http://twitter.com/intent/tweet?text={{achievement.name}}&{{mountPoint}}/achievements/{{achievement._id}}/social?redirectUrl={{mountPoint}}/#/share/{{achievement.template}}/{{user._id}}", target="_blank")
+            a.fa.fa-linkedin-square(href="http://www.linkedin.com/shareArticle?mini=true&url={{mountPoint}}/achievements/{{achievement._id}}/social?redirectUrl={{mountPoint}}/#/share/{{achievement.template}}/{{user._id}}&title={{achievement.name}}", target="_blank")
+            a.fa.fa-google-plus-square(href="https://plus.google.com/share?url={{mountPoint}}/achievements/{{achievement._id}}/social?redirectUrl={{mountPoint}}/#/share/{{achievement.template}}/{{user._id}}", target="_blank")
+            a.fa.fa-external-link-square(href="{{mountPoint}}/achievements/{{achievement._id}}/social?redirectUrl={{mountPoint}}/#/share/{{achievement.template}}/{{user._id}}")
             
         .col-md-7.col-sm-6
           .achievement-info
