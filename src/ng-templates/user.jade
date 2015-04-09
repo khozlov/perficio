@@ -17,11 +17,11 @@ div(ng-controller='UserController as userCtrl')
             .achievements-count(tooltip, title="{{achievement.unlockCount}} of {{achievement.usersCount}} users have this achievement") {{achievement.percent}}%
           .social(ng-if="achievement.grantedBy && !achievement.private")
             | Share: 
-            a.fa.fa-facebook-square(href="http://facebook.com/sharer.php?u={{mountPoint}}/achievements/{{achievement._id}}/social?redirectUrl={{mountPoint}}/#/share/{{achievement.template}}/{{user._id}}", target="_blank")
-            a.fa.fa-twitter-square(href="http://twitter.com/intent/tweet?text={{achievement.name}}&{{mountPoint}}/achievements/{{achievement._id}}/social?redirectUrl={{mountPoint}}/#/share/{{achievement.template}}/{{user._id}}", target="_blank")
-            a.fa.fa-linkedin-square(href="http://www.linkedin.com/shareArticle?mini=true&url={{mountPoint}}/achievements/{{achievement._id}}/social?redirectUrl={{mountPoint}}/#/share/{{achievement.template}}/{{user._id}}&title={{achievement.name}}", target="_blank")
-            a.fa.fa-google-plus-square(href="https://plus.google.com/share?url={{mountPoint}}/achievements/{{achievement._id}}/social?redirectUrl={{mountPoint}}/#/share/{{achievement.template}}/{{user._id}}", target="_blank")
-            a.fa.fa-external-link-square(href="{{mountPoint}}/achievements/{{achievement._id}}/social?redirectUrl={{mountPoint}}/#/share/{{achievement.template}}/{{user._id}}")
+            a.fa.fa-facebook-square(href="http://facebook.com/sharer.php?u={{socialLink(achievement, user)}}", target="_blank")
+            a.fa.fa-twitter-square(href="http://twitter.com/intent/tweet?text={{achievement.name}}&url={{socialLink(achievement, user)}}", target="_blank")
+            a.fa.fa-linkedin-square(href="http://www.linkedin.com/shareArticle?mini=true&url={{socialLink(achievement, user)}}&title={{achievement.name}}", target="_blank")
+            a.fa.fa-google-plus-square(href="https://plus.google.com/share?url={{socialLink(achievement, user)}}", target="_blank")
+            a.fa.fa-external-link-square(href="{{mountPoint}}/#/share/{{achievement.template}}/{{user._id}}")
             
         .col-md-7.col-sm-6
           .achievement-info

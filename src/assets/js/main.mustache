@@ -153,7 +153,7 @@ perficioApp.controller('AchievementController', function($scope, $http, $statePa
     var unlockCount; //counts users with this achievement
     var usersCount; //counts users
     var templateId = $stateParams.id;
-  
+
     function async_show(){
       if(typeof unlockCount !== 'undefined' && typeof usersCount !== 'undefined' && typeof achievement !== 'undefined') {
         achievement.usersCount = usersCount;
@@ -195,7 +195,7 @@ perficioApp.controller('ShareController', function($scope, $http, $stateParams, 
     var user; //user data
     var templateId = $stateParams.aid;
     var userId = $stateParams.uid;
-  
+
     function async_show(){
       if(typeof unlockCount !== 'undefined' && typeof user !== 'undefined' && typeof usersCount !== 'undefined' && typeof achievement !== 'undefined') {
         achievement.usersCount = usersCount;
@@ -234,12 +234,16 @@ perficioApp.controller('ShareController', function($scope, $http, $stateParams, 
 
 });
 
-perficioApp.controller('UserController', function($scope, $http, $stateParams) {
+perficioApp.controller('UserController', function($scope, $http, $stateParams, $window) {
   $http.get('{{mountPoint}}/users/' + $stateParams.id).success(function(data) {
     $scope.user = data;
     $scope.achievements = data.achieved.concat(data.unachieved).sort(function(a, b){ return a.name < b.name ? -1 : 1; });
     $scope.$broadcast('honeycomb','.achievements-list','.achievement-small', '31px');
   });
+
+  $scope.socialLink = function(achievement, user) {
+    return encodeURIComponent($window.location.origin + '{{mountPoint}}/achievements/' + achievement._id + '/social?redirectUrl=' + encodeURIComponent($window.location.origin + '{{mountPoint}}/#/share/' + achievement.template + '/' + user._id));
+  }
 
   $scope.showAchievementPopup = function(achievementData){
     var achievement = achievementData; //template data
@@ -310,7 +314,7 @@ $(document).ready(function(){
 
 $(window).load(function(){
 
-  
+
 })
 
 /**
