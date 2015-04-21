@@ -44,18 +44,11 @@ perficioApp.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
   });
 });
 
-perficioApp.run(function($rootScope) {
+perficioApp.run(function($rootScope, $http) {
   $rootScope.mountPoint = '{{mountPoint}}';
-});
-
-perficioApp.controller('SocialShareController', function($scope, $rootScope) {
-  $rootScope.ogModel = {
-    ogTitle: 'u2i is gamified',
-    ogDesc: "Achievements are fun!",
-    ogSitename: "u2i is gamified",
-    ogUrl: 'http://u2i.is/gamified',
-    ogImage: 'none'
-  };
+  $http.get('{{mountPoint}}/users/current').success(function(data) {
+    $rootScope.currentUser = data;
+  });
 });
 
 perficioApp.directive('honeycomb', ['$timeout', function ($timeout) {
